@@ -1,0 +1,108 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:vm="clr-namespace:Spellwork2.ViewModels"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        x:Class="Spellwork2.Views.SetupWindowView"
+        x:DataType="vm:SetupWindowViewModel"
+        Width="800"
+        Height="450"
+        Title="Setup">
+        
+    <Design.DataContext>
+        <vm:SetupWindowViewModel />
+    </Design.DataContext>
+    
+    <Panel>
+        <WindowNotificationManager Name="NotificationManager"
+                                   MaxItems="1"
+                                   Position="BottomCenter">
+        </WindowNotificationManager>
+        
+        <StackPanel HorizontalAlignment="Center"
+                    VerticalAlignment="Center">
+            
+            <!-- Header -->
+            <TextBlock Text="Setup"
+                       FontSize="20"
+                       HorizontalAlignment="Center"/>
+            
+            <!-- DB2 Settings-->
+            <TextBlock Text="DB2"
+                       Margin="0,20,0,0"/>
+            <StackPanel Orientation="Horizontal" 
+                        HorizontalAlignment="Left"
+                        Spacing="5">
+                
+                <TextBox PlaceholderText="Path to your DBC/DB2 folder" 
+                         Width="300"
+                         Text="{Binding Db2FolderPath}"/>
+                
+                <Button   Name="SelectDb2FolderButton"
+                          Command="{Binding SelectDb2Folder}"
+                          CommandParameter="{Binding $parent[Window]}"
+                          Content="Select"
+                          VerticalAlignment="Top"/>
+            </StackPanel>
+            
+            <TextBlock Text="DBDefs"
+                       Margin="0,20,0,0"/>
+            
+            <!-- DBDefs Settings -->
+            <StackPanel Orientation="Horizontal" 
+                        HorizontalAlignment="Left"
+                        Spacing="5">
+                    
+                    <TextBox PlaceholderText="Path to WoWDBDefs definitions" 
+                             Width="300"
+                             Text="{Binding DbDefsPath}"/>
+                    
+                <Button Name="SelectDbDefsFileButton"
+                        Command="{Binding SelectDbDefsFile}"
+                        CommandParameter="{Binding $parent[Window]}"
+                        Content="Select"
+                        IsEnabled="{Binding !IsDownloadingDefs}"
+                        VerticalAlignment="Top"/>
+                    
+                <Button Name="DownloadDbDefsFolderButton" 
+                        Command="{Binding DownloadDbDefs}"
+                        CommandParameter="{Binding #NotificationManager}"
+                        Content="Download"
+                        IsEnabled="{Binding !IsDownloadingDefs}"
+                        VerticalAlignment="Top"
+                        ToolTip.Tip="Downloads the definitions from GitHub and saves them to the application's directory"/>
+            </StackPanel>
+            
+            <TextBlock Text="Build"
+                       Margin="0,20,0,0"/>
+            <ComboBox Name="BuildNumberComboBox" 
+                     ItemsSource="{Binding AvailableBuilds}"
+                     SelectedItem="{Binding SelectedBuild}"
+                     PlaceholderText="Build Number"
+                     HorizontalAlignment="Left"
+                     Width="300"/>
+            
+            <Button Name="SaveSettingsButton"
+                    Command="{Binding SaveCurrentSettings}"
+                    CommandParameter="{Binding #NotificationManager}"
+                    HorizontalAlignment="Center"
+                    HorizontalContentAlignment="Center"
+                    Margin="0,20"
+                    MinWidth="100"
+                    Content="Save">
+                
+                <Button.IsEnabled>
+                    <MultiBinding Converter="{x:Static BoolConverters.And}">
+                        <Binding Path="HasErrors" Converter="{x:Static BoolConverters.Not}"/>
+                        <Binding Path="IsDownloadingDefs" Converter="{x:Static BoolConverters.Not}"/>
+                    </MultiBinding>
+                </Button.IsEnabled>
+                
+            </Button>
+        </StackPanel>
+        <ProgressBar VerticalAlignment="Bottom" 
+                     Height="10"
+                     IsIndeterminate="{Binding IsDownloadingDefs}"/>
+    </Panel>
+</Window>

@@ -1,0 +1,112 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             xmlns:vm="clr-namespace:Spellwork2.ViewModels"
+             x:Class="Spellwork2.Views.SpellInfoView"
+             x:DataType="vm:SpellInfoViewModel">
+
+    <Design.DataContext>
+        <vm:SpellInfoViewModel />
+    </Design.DataContext>
+
+    <Grid  ShowGridLines="False"
+          RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto"
+          ColumnDefinitions="*"
+          IsVisible="True">
+
+        <!-- Header -->
+        <TextBlock Text="SpellInfo"
+                   FontWeight="Bold"
+                   Grid.Row="0" />
+
+        <!-- Spell Id and name -->
+        <StackPanel Orientation="Horizontal"
+                    Grid.Row="1"
+                    Margin="0,10,0,0"
+                    Spacing="5">
+            <TextBlock FontWeight="Bold">
+                <Run Text="ID: "/>
+                <Run Text="{Binding SpellId, StringFormat={}{0} - }"/>
+                <Run Text="{Binding FullName}"/>
+            </TextBlock>
+        </StackPanel>
+
+        <!-- Tooltips -->
+        <Expander Grid.Row="2"
+                  Header="Tooltips"
+                  HorizontalAlignment="Stretch"
+                  Margin="0,5"
+                  IsExpanded="True">
+
+            <Expander.IsVisible>
+                <MultiBinding Converter="{x:Static BoolConverters.Or}">
+                    <Binding Path="HasSpellDescription" />
+                    <Binding Path="HasAuraDescription" />
+                </MultiBinding>
+            </Expander.IsVisible>
+
+            <StackPanel>
+                <TextBlock Text="Spell" FontWeight="Bold" />
+                <TextBlock Text="{Binding Description}"
+                           IsVisible="{Binding HasSpellDescription}"
+                           TextWrapping="Wrap" />
+
+                <TextBlock Text="Aura" FontWeight="Bold"
+                           IsVisible="{Binding HasAuraDescription}"
+                           Margin="0,10,0,0" />
+                <TextBlock Text="{Binding AuraDescription}"
+                           IsVisible="{Binding HasAuraDescription}"
+                           TextWrapping="Wrap" />
+            </StackPanel>
+        </Expander>
+
+        <!-- SpellMisc-->
+        <Expander Grid.Row="3"
+                  Header="Misc"
+                  HorizontalAlignment="Stretch"
+                  Margin="0,5"
+                  IsExpanded="True">
+
+            <StackPanel Spacing="5">
+                <TextBlock TextWrapping="Wrap">
+                    <Bold>SpellFamily: </Bold>
+                    <Run Text="{Binding SpellFamily}" />
+                </TextBlock>
+
+                <TextBlock TextWrapping="Wrap"
+                           IsVisible="{Binding HasSpellFamily}">
+                    <Bold>SpellFamilyMask: </Bold>
+                    <Run Text="{Binding SpellClassMasks[0], StringFormat={}0x{0:X8} - }" />
+                    <Run Text="{Binding SpellClassMasks[1], StringFormat={}0x{0:X8} - }" />
+                    <Run Text="{Binding SpellClassMasks[2], StringFormat={}0x{0:X8} - }" />
+                    <Run Text="{Binding SpellClassMasks[3], StringFormat={}0x{0:X8}}" />
+                </TextBlock>
+
+                <TextBlock TextWrapping="Wrap">
+                    <Bold>SchoolMask: </Bold>
+                    <Run Text="{Binding SchoolMask}" />
+                </TextBlock>
+
+                <StackPanel IsVisible="{Binding HasAttributes}">
+                    <TextBlock Text="Attributes" FontWeight="Bold" />
+                    <SelectableTextBlock Text="{Binding AttributesString}"
+                                         TextWrapping="Wrap" />
+                </StackPanel>
+            </StackPanel>
+
+        </Expander>
+
+        <!-- Effects -->
+        <Expander Grid.Row="4"
+                  Header="Effects"
+                  HorizontalAlignment="Stretch"
+                  Margin="0,5"
+                  IsExpanded="True">
+
+            <ItemsControl ItemsSource="{Binding SpellEffects}" />
+        </Expander>
+    </Grid>
+
+</UserControl>

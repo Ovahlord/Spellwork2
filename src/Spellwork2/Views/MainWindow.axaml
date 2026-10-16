@@ -1,0 +1,86 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:Spellwork2.ViewModels"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        x:Class="Spellwork2.Views.MainWindow"
+        x:DataType="vm:MainViewModel"
+        Icon="/Assets/AppIcon.jpg"
+        Title="Spellwork2">
+
+    <Design.DataContext>
+        <vm:MainViewModel />
+    </Design.DataContext>
+    
+    <Panel IsEnabled="{Binding !IsLoadingData}">
+        <WindowNotificationManager Name="NotificationManager"
+                                   MaxItems="1"
+                                   Position="BottomCenter">
+        </WindowNotificationManager>
+        
+        <DockPanel LastChildFill="True">
+            
+            <!-- Menu Bar-->
+            <Menu DockPanel.Dock="Top">
+                <MenuItem Header="Options">
+                    <MenuItem Header="Settings"/>
+                </MenuItem>
+                <MenuItem Header="About"/>
+            </Menu>
+            
+            <!-- Loading indicator-->
+            <ProgressBar DockPanel.Dock="Bottom"
+                         Name="LoadingProgressBar"
+                         IsVisible="{Binding IsLoadingData}"
+                         IsIndeterminate="{Binding IsLoadingData}"
+                         Height="8"/>
+            
+            <!-- Spell List-->
+            <Grid RowDefinitions="Auto,*" DockPanel.Dock="Left">
+                <TextBox DockPanel.Dock="Top"
+                         Text="{Binding SpellIdOrNameFilter}"
+                         Margin="10,0,0,0"
+                         Width="250"
+                         HorizontalAlignment="Left"
+                         PlaceholderText="Spell name or Id"
+                         IsEnabled="{Binding !IsLoadingData}"/>  
+                
+                <TreeDataGrid Grid.Row="1"
+                              Name="SpellInfoTreeDataGrid"
+                              Margin="10,5,0,0"
+                              Source="{Binding SpellInfoSource}"
+                              IsEnabled="{Binding !IsLoadingData}"
+                              CanUserResizeColumns="True">
+                </TreeDataGrid>
+            </Grid>
+            
+            <Separator DockPanel.Dock="Left"
+                       Height="NaN" Width="1"/>
+            
+            <!-- Filter Panel -->
+            <ScrollViewer DockPanel.Dock="Left">
+                <StackPanel DockPanel.Dock="Left"
+                            Spacing="5" >
+                    <TextBlock Text="Filters" 
+                               HorizontalAlignment="Left"/>
+                    <Button Name="AddSpellInfoFilterButton" 
+                            Command="{Binding AddSpellInfoFilter}"
+                            Content="+ Add Filter"
+                            ToolTip.Tip="Adds an additional filter to fine tune your spell search"/>
+                
+                    <ItemsControl Name="SpellInfoFilterItemsControl"
+                                  ItemsSource="{Binding SpellInfoFilters}"/>
+                </StackPanel>
+            </ScrollViewer>
+            
+            <Separator DockPanel.Dock="Left"
+                       Height="NaN" Width="1"/>
+            
+            <!-- SpellInfo Display -->
+            <ScrollViewer  DockPanel.Dock="Left">
+                <ContentControl Content="{Binding SelectedSpellInfo}"/>
+            </ScrollViewer>
+        </DockPanel>
+    </Panel>
+</Window>

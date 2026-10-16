@@ -1,0 +1,42 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="270" d:DesignHeight="120"
+             xmlns:vm="clr-namespace:Spellwork2.ViewModels"
+             x:Class="Spellwork2.Views.SpellInfoFilterView"
+             x:DataType="vm:SpellInfoFilterViewModel">
+    
+    <Design.DataContext>
+        <vm:SpellInfoFilterViewModel />
+    </Design.DataContext>
+    
+    <StackPanel Orientation="Horizontal" 
+                Margin="10,10,10,10">
+        <Button Name= "RemoveFilterButton"
+                Command="{Binding $parent[Window].((vm:MainViewModel)DataContext).RemoveSpellInfoFilter}"
+                CommandParameter="{Binding}"
+                Content=" - "
+                VerticalAlignment="Top"
+                ToolTip.Tip="Removes the filter from the filter list"/>
+        
+        <StackPanel>
+            <ComboBox Name="PropertyComboBox"
+                      PlaceholderText="Property"
+                      ItemsSource="{Binding SpellInfoAttributes}"
+                      Width="220"
+                      MaxWidth="220"/>
+        
+            <ComboBox Name="OperatorComboBox"
+                      PlaceholderText="Operator"
+                      ItemsSource="{Binding FilterOperators}"
+                      Width="220"
+                      MaxWidth="220"/>
+        
+            <ComboBox Name="ValueComboBox" 
+                      PlaceholderText="Value"
+                      Width="220"
+                      MaxWidth="220"/>
+        </StackPanel>
+    </StackPanel>
+</UserControl>

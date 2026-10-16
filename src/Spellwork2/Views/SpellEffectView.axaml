@@ -1,0 +1,57 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             xmlns:vm="clr-namespace:Spellwork2.ViewModels"
+             x:Class="Spellwork2.Views.SpellEffectView"
+             x:DataType="vm:SpellEffectViewModel">
+    
+    <Design.DataContext>
+        <vm:SpellEffectViewModel />
+    </Design.DataContext>
+    
+    <StackPanel Margin="5,10,5,10" Spacing="2">
+        <!-- Spell Effect-->
+        <SelectableTextBlock FontWeight="Bold" Text="{Binding EffectIndexName}"/>
+        
+        <SelectableTextBlock FontWeight="Bold">
+            <SelectableTextBlock.Text>
+                <MultiBinding StringFormat="{}{0} - {1}">
+                    <Binding Path="Effect"/>
+                    <Binding Path="EffectName"/>
+                </MultiBinding>
+            </SelectableTextBlock.Text>
+        </SelectableTextBlock>
+        
+        <!-- Aura Info -->
+        <StackPanel IsVisible="{Binding HasAura}">
+            <SelectableTextBlock>
+                <SelectableTextBlock.Text>
+                    <MultiBinding StringFormat="{}Aura: {0} - {1}">
+                        <Binding Path="EffectAura"/>
+                        <Binding Path="EffectAuraName"/>
+                    </MultiBinding>
+                </SelectableTextBlock.Text>
+            </SelectableTextBlock>
+        </StackPanel>
+        
+        <TextBlock>
+            <Run Text="BasePoints: " FontWeight="DemiBold"/>
+            <Run Text="{Binding BasePoints}"/>
+            <Run Text=" Variance: " FontWeight="DemiBold"/>
+            <Run Text="{Binding Variance}"/>
+            <Run Text=" DieSides: " FontWeight="DemiBold"/>
+            <Run Text="{Binding DieSides}"/>
+        </TextBlock>
+        
+        <TextBlock>
+            <Run Text="MiscValueA: " FontWeight="DemiBold"/>
+            <Run Text="{Binding EffectMiscValues[0]}"/>
+            <Run Text=" MiscValueB: " FontWeight="DemiBold"/>
+            <Run Text="{Binding EffectMiscValues[1]}"/>
+        </TextBlock>
+        
+        <Separator/>
+    </StackPanel>
+</UserControl>
