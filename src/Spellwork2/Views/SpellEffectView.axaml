@@ -13,44 +13,73 @@
     
     <StackPanel Margin="5,10,5,10" Spacing="2">
         <!-- Spell Effect-->
-        <SelectableTextBlock FontWeight="Bold" Text="{Binding EffectIndexName}"/>
-        
         <SelectableTextBlock FontWeight="Bold">
             <SelectableTextBlock.Text>
-                <MultiBinding StringFormat="{}{0} - {1}">
-                    <Binding Path="Effect"/>
+                <MultiBinding StringFormat="{}EFFECT_{0} - {1} ({2})">
+                    <Binding Path="EffectIndex"/>
                     <Binding Path="EffectName"/>
+                    <Binding Path="Effect"/>
                 </MultiBinding>
             </SelectableTextBlock.Text>
         </SelectableTextBlock>
         
-        <!-- Aura Info -->
-        <StackPanel IsVisible="{Binding HasAura}">
-            <SelectableTextBlock>
-                <SelectableTextBlock.Text>
-                    <MultiBinding StringFormat="{}Aura: {0} - {1}">
-                        <Binding Path="EffectAura"/>
-                        <Binding Path="EffectAuraName"/>
-                    </MultiBinding>
-                </SelectableTextBlock.Text>
-            </SelectableTextBlock>
+        <StackPanel Spacing="2" Margin="15,0,0,0">
+            <StackPanel>
+                <!-- Aura -->
+                <StackPanel IsVisible="{Binding HasAura}">
+                    <SelectableTextBlock>
+                        <Run Text="Aura: " FontWeight="DemiBold"/>
+                        <Run Text="{Binding EffectAuraName}"/>
+                        <Run Text="{Binding EffectAura, StringFormat=({0})}"/>
+                    </SelectableTextBlock>
+                    
+                    <StackPanel Margin="15,0,0,0">
+                        <SelectableTextBlock>
+                            <Run Text="Period: " FontWeight="DemiBold"/> 
+                            <Run Text="{Binding Period}"/>
+                        </SelectableTextBlock>
+                    </StackPanel>
+                    <TextBlock/>
+                </StackPanel>
+                
+                <!-- Target A-->
+                <SelectableTextBlock>
+                    <Run Text="TargetA: " FontWeight="DemiBold"/>
+                    <Run Text="{Binding ImplicitTargetA}"/>
+                    <Run Text="{Binding RadiusA}"/>
+                </SelectableTextBlock>
+                
+                <!-- Target B-->
+                <SelectableTextBlock>
+                    <Run Text="TargetB: " FontWeight="DemiBold"/>
+                    <Run Text="{Binding ImplicitTargetB}"/>
+                    <Run Text="{Binding RadiusB}"/>
+                </SelectableTextBlock>
+                
+                <TextBlock/>
+                
+                <!-- Effect -->
+                <StackPanel>
+                    <TextBlock>
+                        <Run Text="BasePoints: " FontWeight="DemiBold"/>
+                        <Run Text="{Binding BasePoints}"/>
+                        <Run Text=" Variance: " FontWeight="DemiBold"/>
+                        <Run Text="{Binding Variance}"/>
+                        <Run Text=" DieSides: " FontWeight="DemiBold"/>
+                        <Run Text="{Binding DieSides}"/>
+                    </TextBlock>
+        
+                    <TextBlock>
+                        <Run Text="MiscValueA: " FontWeight="DemiBold"/>
+                        <Run Text="{Binding EffectMiscValues[0]}"/>
+                        <Run Text=" MiscValueB: " FontWeight="DemiBold"/>
+                        <Run Text="{Binding EffectMiscValues[1]}"/>
+                    </TextBlock>
+                </StackPanel>
+                
+            </StackPanel>
         </StackPanel>
-        
-        <TextBlock>
-            <Run Text="BasePoints: " FontWeight="DemiBold"/>
-            <Run Text="{Binding BasePoints}"/>
-            <Run Text=" Variance: " FontWeight="DemiBold"/>
-            <Run Text="{Binding Variance}"/>
-            <Run Text=" DieSides: " FontWeight="DemiBold"/>
-            <Run Text="{Binding DieSides}"/>
-        </TextBlock>
-        
-        <TextBlock>
-            <Run Text="MiscValueA: " FontWeight="DemiBold"/>
-            <Run Text="{Binding EffectMiscValues[0]}"/>
-            <Run Text=" MiscValueB: " FontWeight="DemiBold"/>
-            <Run Text="{Binding EffectMiscValues[1]}"/>
-        </TextBlock>
+        <TextBlock/>
         
         <Separator/>
     </StackPanel>
