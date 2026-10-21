@@ -12,6 +12,7 @@ public class SpellInfoViewModel : ViewModelBase
 {
     public int SpellId { get; init; }
     public int DifficultyId { get; init; }
+    public int SpellRangeId { get; init; }
     public string DifficultyName { get; init; } = "None";
     public uint[] Attributes { get; init; } = [];
     
@@ -21,8 +22,13 @@ public class SpellInfoViewModel : ViewModelBase
     public string AuraDescription { get; init; } = string.Empty;
     public SpellSchoolMasks SchoolMask { get; init; }
     public SpellFamilies SpellFamily { get; init; }
+    public int SpellFamilyId => (int)SpellFamily;
+    public int SchoolMaskInt => (int)SchoolMask;
     public uint[] SpellClassMasks { get; init; } = [];
     public string AttributesString { get; init; } = string.Empty;
+    public string SpellRangeName { get; init; } = string.Empty;
+    public string SpellRangeFriendly { get; init; } = string.Empty;
+    public string SpellRangeEnemy { get; init; } = string.Empty;
 
     public List<SpellEffectViewModel> SpellEffects { get; init; } = [];
 
@@ -31,7 +37,7 @@ public class SpellInfoViewModel : ViewModelBase
     public bool HasAuraDescription => !string.IsNullOrWhiteSpace(AuraDescription);
     public bool HasAttributes => !string.IsNullOrWhiteSpace(AttributesString);
     public bool HasSpellFamily => SpellFamily != SpellFamilies.SPELLFAMILY_GENERIC;
-    public bool ScalesWithLevel => DbcMgr.SpellScalingSpellId.TryGetValue(SpellId, out _);
+    public bool HasScaling => DbcMgr.SpellScalingSpellId.TryGetValue(SpellId, out _);
 
     public SpellInfoViewModel()
     {
@@ -41,6 +47,7 @@ public class SpellInfoViewModel : ViewModelBase
     {
         SpellId = Convert.ToInt32(spellMiscEntry["SpellID"]);
         DifficultyId = Convert.ToInt32(spellMiscEntry["DifficultyID"]);
+        SpellRangeId = Convert.ToInt32(spellMiscEntry["RangeIndex"]);
 
         if (spellMiscEntry["Attributes"] is uint[] attributes)
         {
@@ -81,6 +88,23 @@ public class SpellInfoViewModel : ViewModelBase
                 SpellClassMasks = spellClassMask;
             else
                 SpellClassMasks = [0, 0, 0, 0];
+        }
+
+        if (SpellRangeId > 0)
+        {
+            if (DbcMgr.SpellRangeStore != null && DbcMgr.SpellRangeStore.TryGetValue(SpellRangeId, out DBCDRow? spellRangeEntry))
+            {
+
+                SpellRangeName = (string)spellRangeEntry["DisplayName_lang"];
+                if (spellRangeEntry["RangeMin"] is float[] rangeMin)
+                {
+                    if (spellRangeEntry["RangeMax"] is float[] rangeMax)
+                    {
+                        SpellRangeFriendly = $"Friendly: {rangeMin[0]}yds - {rangeMax[0]}yds";
+                        SpellRangeEnemy =  $"Enemy: {rangeMin[1]}yds - {rangeMax[1]}yds";
+                    }
+                }
+            }
         }
     }
     

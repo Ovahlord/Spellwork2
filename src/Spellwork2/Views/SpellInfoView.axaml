@@ -70,11 +70,14 @@
                   IsExpanded="True">
 
             <StackPanel Spacing="5">
-                <Grid ColumnDefinitions="Auto,*" RowDefinitions="*,*,*,*"
+                <Grid ColumnDefinitions="Auto,*" RowDefinitions="*,*,*,*,*,*,*,*,*,*,*"
                       ShowGridLines="False" ColumnSpacing="10">
                     
                     <TextBlock Grid.Row="0" Grid.Column="0" Text="SpellFamily" FontWeight="DemiBold"/>
-                    <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding SpellFamily}"/>
+                    <TextBlock Grid.Row="0" Grid.Column="1">
+                        <Run Text="{Binding SpellFamily}"/>
+                        <Run Text="{Binding SpellFamilyId, StringFormat={}({0})}"/>
+                    </TextBlock>
                     
                     <TextBlock Grid.Row="1" Grid.Column="0" Text="SpellFamilyMask" FontWeight="DemiBold" IsVisible="{Binding HasSpellFamily}"/>
                     <TextBlock Grid.Row="1" Grid.Column="1" IsVisible="{Binding HasSpellFamily}">
@@ -85,10 +88,21 @@
                     </TextBlock>
                     
                     <TextBlock Grid.Row="2" Grid.Column="0" Text="SchoolMask" FontWeight="DemiBold"/>
-                    <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding SchoolMask}"/>
+                    <TextBlock Grid.Row="2" Grid.Column="1">
+                        <Run Text="{Binding SchoolMask}"/>
+                        <Run Text="{Binding SchoolMaskInt, StringFormat={}(0x{0:X2})}"/>
+                    </TextBlock>
                     
                     <TextBlock Grid.Row="3" Grid.Column="0" Text="Has SpellScaling" FontWeight="DemiBold"/>
-                    <TextBlock Grid.Row="3" Grid.Column="1" Text="{Binding ScalesWithLevel}"/>
+                    <TextBlock Grid.Row="3" Grid.Column="1" Text="{Binding HasScaling}"/>
+                                 
+                    <TextBlock Grid.Row="4" Grid.Column="0" Text="Range" FontWeight="DemiBold"/>
+                    <TextBlock Grid.Row="4" Grid.Column="1">
+                        <Run Text="{Binding SpellRangeName}"/>
+                        <Run Text="{Binding SpellRangeId, StringFormat={}(Id: {0})}"/>
+                    </TextBlock>
+                    <TextBlock Grid.Row="5" Grid.Column="1" Text="{Binding SpellRangeFriendly}"/>
+                    <TextBlock Grid.Row="6" Grid.Column="1" Text="{Binding SpellRangeEnemy}"/>
                 </Grid>
                 
                 <StackPanel IsVisible="{Binding HasAttributes}">
