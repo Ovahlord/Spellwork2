@@ -70,25 +70,27 @@
                   IsExpanded="True">
 
             <StackPanel Spacing="5">
-                <TextBlock TextWrapping="Wrap">
-                    <Bold>SpellFamily: </Bold>
-                    <Run Text="{Binding SpellFamily}" />
-                </TextBlock>
-
-                <TextBlock TextWrapping="Wrap"
-                           IsVisible="{Binding HasSpellFamily}">
-                    <Bold>SpellFamilyMask: </Bold>
-                    <Run Text="{Binding SpellClassMasks[0], StringFormat={}0x{0:X8} - }" />
-                    <Run Text="{Binding SpellClassMasks[1], StringFormat={}0x{0:X8} - }" />
-                    <Run Text="{Binding SpellClassMasks[2], StringFormat={}0x{0:X8} - }" />
-                    <Run Text="{Binding SpellClassMasks[3], StringFormat={}0x{0:X8}}" />
-                </TextBlock>
-
-                <TextBlock TextWrapping="Wrap">
-                    <Bold>SchoolMask: </Bold>
-                    <Run Text="{Binding SchoolMask}" />
-                </TextBlock>
-
+                <Grid ColumnDefinitions="Auto,*" RowDefinitions="*,*,*,*"
+                      ShowGridLines="False" ColumnSpacing="10">
+                    
+                    <TextBlock Grid.Row="0" Grid.Column="0" Text="SpellFamily" FontWeight="DemiBold"/>
+                    <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding SpellFamily}"/>
+                    
+                    <TextBlock Grid.Row="1" Grid.Column="0" Text="SpellFamilyMask" FontWeight="DemiBold" IsVisible="{Binding HasSpellFamily}"/>
+                    <TextBlock Grid.Row="1" Grid.Column="1" IsVisible="{Binding HasSpellFamily}">
+                        <Run Text="{Binding SpellClassMasks[0], StringFormat={}0x{0:X8} - }" />
+                        <Run Text="{Binding SpellClassMasks[1], StringFormat={}0x{0:X8} - }" />
+                        <Run Text="{Binding SpellClassMasks[2], StringFormat={}0x{0:X8} - }" />
+                        <Run Text="{Binding SpellClassMasks[3], StringFormat={}0x{0:X8}}" />
+                    </TextBlock>
+                    
+                    <TextBlock Grid.Row="2" Grid.Column="0" Text="SchoolMask" FontWeight="DemiBold"/>
+                    <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding SchoolMask}"/>
+                    
+                    <TextBlock Grid.Row="3" Grid.Column="0" Text="Has SpellScaling" FontWeight="DemiBold"/>
+                    <TextBlock Grid.Row="3" Grid.Column="1" Text="{Binding ScalesWithLevel}"/>
+                </Grid>
+                
                 <StackPanel IsVisible="{Binding HasAttributes}">
                     <TextBlock Text="Attributes" FontWeight="Bold" />
                     <SelectableTextBlock Text="{Binding AttributesString}"

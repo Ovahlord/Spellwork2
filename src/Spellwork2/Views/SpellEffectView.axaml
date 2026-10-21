@@ -75,10 +75,23 @@
                         <Run Text=" MiscValueB: " FontWeight="DemiBold"/>
                         <Run Text="{Binding EffectMiscValues[1]}"/>
                     </TextBlock>
+                    
+                    <TextBlock IsVisible="{Binding HasTriggerSpell}">
+                        <Run Text="TriggerSpell: " FontWeight="DemiBold"/>
+                        <Run>
+                            <Run.Text>
+                                <MultiBinding StringFormat="{}{0} ({1})">
+                                   <Binding Path="TriggerSpell"/> 
+                                   <Binding Path="TriggerSpellName"/> 
+                                </MultiBinding>
+                            </Run.Text>
+                        </Run>
+                    </TextBlock>
                 </StackPanel>
                 
             </StackPanel>
         </StackPanel>
+        
         <TextBlock/>
         
         <Separator/>

@@ -15,6 +15,7 @@ public class SpellEffectViewModel : ViewModelBase
     public float Variance { get; init; }
     public int DieSides { get; init; }
     public int Period { get; init; }
+    public int TriggerSpell { get; init; }
 
     public int[] EffectMiscValues { get; set; } = [0, 0];
     
@@ -24,9 +25,10 @@ public class SpellEffectViewModel : ViewModelBase
     public ImplicitTargets ImplicitTargetB { get; init; }
     public string RadiusA { get; init; } = string.Empty;
     public string RadiusB { get; init; } = string.Empty;
-    
-    public bool HasAura { get; init; } = true;
-    public bool HasDieSides {  get; init; } = true;
+    public string TriggerSpellName { get; init; } = string.Empty;
+
+    public bool HasAura => EffectAuraName != SpellAuras.SPELL_AURA_NONE;
+    public bool HasTriggerSpell => TriggerSpell > 0;
     
     public SpellEffectViewModel()
     {
@@ -37,8 +39,15 @@ public class SpellEffectViewModel : ViewModelBase
         EffectIndex = Convert.ToInt32(dbcRow["EffectIndex"]);
         Effect = Convert.ToInt32(dbcRow["Effect"]);
         EffectAura = Convert.ToInt32(dbcRow["EffectAura"]);
-        HasAura = EffectAuraName != SpellAuras.SPELL_AURA_NONE;
         Period = Convert.ToInt32(dbcRow["EffectAuraPeriod"]);
+        TriggerSpell = Convert.ToInt32(dbcRow["EffectTriggerSpell"]);
+        if (TriggerSpell > 0 && DbcMgr.SpellNameStore != null)
+        {
+            if (DbcMgr.SpellNameStore.TryGetValue(TriggerSpell, out DBCDRow? spellNameEntry))
+                TriggerSpellName = (string)spellNameEntry["Name_lang"];
+            else
+                TriggerSpellName = "Unknown Spell (removed or serverside)";
+        }
 
         // Initialize misc values
         if (dbcRow["EffectMiscValue"] is int[] miscValues)
@@ -81,11 +90,9 @@ public class SpellEffectViewModel : ViewModelBase
         {
             // DieSides exist only in classic varians
             DieSides = Convert.ToInt32(dbcRow["EffectDieSides"]);
-            HasDieSides = true;
         }
         catch (Exception)
         {
-            HasDieSides = false;
         }
     }
 }

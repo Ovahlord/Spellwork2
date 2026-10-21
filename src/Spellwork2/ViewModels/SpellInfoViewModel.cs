@@ -31,6 +31,7 @@ public class SpellInfoViewModel : ViewModelBase
     public bool HasAuraDescription => !string.IsNullOrWhiteSpace(AuraDescription);
     public bool HasAttributes => !string.IsNullOrWhiteSpace(AttributesString);
     public bool HasSpellFamily => SpellFamily != SpellFamilies.SPELLFAMILY_GENERIC;
+    public bool ScalesWithLevel => DbcMgr.SpellScalingSpellId.TryGetValue(SpellId, out _);
 
     public SpellInfoViewModel()
     {

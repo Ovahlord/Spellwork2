@@ -24,12 +24,14 @@ public static class DbcMgr
     public static IDBCDStorage? SpellRangeStore { get; private set; }
     public static IDBCDStorage? SpellPowerStore { get; private set; }
     public static IDBCDStorage? SpellCategoriesStore { get; private set; }
+    public static IDBCDStorage? SpellScalingStore { get; private set; }
     public static IDBCDStorage? DifficultyStore { get; private set; }
     public static IDBCDStorage? ItemSparseStore { get; private set; }
     
     public static ConcurrentDictionary<int, List<DBCDRow>> SpellEffectsBySpellId { get; } = [];
     public static ConcurrentDictionary<int, List<DBCDRow>> SpellMiscBySpellId { get; } = [];
     public static ConcurrentDictionary<int, DBCDRow> SpellClassOptionsBySpellId { get; } = [];
+    public static ConcurrentDictionary<int, DBCDRow> SpellScalingSpellId { get; } = [];
     
     
     public static async Task LoadStoragesAsync()
@@ -77,6 +79,17 @@ public static class DbcMgr
             {
                 int spellId = (int)row["SpellID"];
                 SpellClassOptionsBySpellId.TryAdd(spellId, row);
+            });
+        }));
+        
+        
+        runningTasks.Add(Task.Run(() =>
+        {
+            SpellScalingStore = dbcd.Load("SpellScaling", ConfigurationMgr.SelectedBuild);
+            Parallel.ForEach(SpellScalingStore.Values, row =>
+            {
+                int spellId = (int)row["SpellID"];
+                SpellScalingSpellId.TryAdd(spellId, row);
             });
         }));
         
