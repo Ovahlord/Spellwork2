@@ -95,20 +95,54 @@
                     
                     <TextBlock Grid.Row="3" Grid.Column="0" Text="Has SpellScaling" FontWeight="DemiBold"/>
                     <TextBlock Grid.Row="3" Grid.Column="1" Text="{Binding HasScaling}"/>
-                                 
+                         
+                    <!-- Range -->
                     <TextBlock Grid.Row="4" Grid.Column="0" Text="Range" FontWeight="DemiBold"/>
                     <TextBlock Grid.Row="4" Grid.Column="1">
                         <Run Text="{Binding SpellRangeName}"/>
                         <Run Text="{Binding SpellRangeId, StringFormat={}(Id: {0})}"/>
                     </TextBlock>
-                    <TextBlock Grid.Row="5" Grid.Column="1" Text="{Binding SpellRangeFriendly}"/>
-                    <TextBlock Grid.Row="6" Grid.Column="1" Text="{Binding SpellRangeEnemy}"/>
+                    
+                    <TextBlock Grid.Row="5" Grid.Column="1">
+                        <TextBox.Text>
+                            <MultiBinding StringFormat="Enemy: {0} - {1}yds">
+                                <Binding Path="MinRange[0]"/>
+                                <Binding Path="MaxRange[0]"/>
+                            </MultiBinding>
+                        </TextBox.Text>
+                    </TextBlock>
+                    <TextBlock Grid.Row="6" Grid.Column="1">
+                        <TextBox.Text>
+                            <MultiBinding StringFormat="Friend: {0} - {1}yds">
+                                <Binding Path="MinRange[1]"/>
+                                <Binding Path="MaxRange[1]"/>
+                            </MultiBinding>
+                        </TextBox.Text>
+                    </TextBlock>
+                    
                 </Grid>
                 
+                <!-- Attributes -->
                 <StackPanel IsVisible="{Binding HasAttributes}">
-                    <TextBlock Text="Attributes" FontWeight="Bold" />
-                    <SelectableTextBlock Text="{Binding AttributesString}"
-                                         TextWrapping="Wrap" />
+                    <TableView ItemsSource="{Binding Attributes}" Margin="0,20,0,0">
+                        <TableView.Columns>
+                            <TableViewColumn Header="Attribute" 
+                                             Binding="{Binding AttributeTitle}" 
+                                             Width="150"/>
+                            <TableViewColumn Header="Value" 
+                                             Binding="{Binding AttributeValue, 
+                                             StringFormat={}0x{0:X8}}" 
+                                             Width="150"/>
+                            <TableViewColumn Header="Enums" 
+                                             Width="Auto">
+                                <TableViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <SelectableTextBlock Text="{Binding AttributeNames}" TextWrapping="Wrap"/>
+                                    </DataTemplate>
+                                </TableViewColumn.CellTemplate>
+                            </TableViewColumn>
+                        </TableView.Columns>
+                    </TableView>
                 </StackPanel>
             </StackPanel>
 
