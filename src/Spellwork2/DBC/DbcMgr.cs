@@ -31,7 +31,8 @@ public static class DbcMgr
     public static ConcurrentDictionary<int, List<DBCDRow>> SpellEffectsBySpellId { get; } = [];
     public static ConcurrentDictionary<int, List<DBCDRow>> SpellMiscBySpellId { get; } = [];
     public static ConcurrentDictionary<int, DBCDRow> SpellClassOptionsBySpellId { get; } = [];
-    public static ConcurrentDictionary<int, DBCDRow> SpellScalingSpellId { get; } = [];
+    public static ConcurrentDictionary<int, DBCDRow> SpellScalingBySpellId { get; } = [];
+    public static ConcurrentDictionary<int, string> ItemNamesByItemId { get; } = [];
     
     
     public static async Task LoadStoragesAsync()
@@ -64,7 +65,7 @@ public static class DbcMgr
             SpellEffectStore = dbcd.Load("SpellEffect", ConfigurationMgr.SelectedBuild);
             Parallel.ForEach(SpellEffectStore.Values, row =>
             {
-                int spellId = (int)row["SpellID"];
+                int spellId = row.FieldAs<int>("SpellID");
                 if (SpellEffectsBySpellId.TryGetValue(spellId, out List<DBCDRow>? rows))
                     rows.Add(row);
                 else
@@ -77,7 +78,7 @@ public static class DbcMgr
             SpellClassOptionsStore = dbcd.Load("SpellClassOptions", ConfigurationMgr.SelectedBuild);
             Parallel.ForEach(SpellClassOptionsStore.Values, row =>
             {
-                int spellId = (int)row["SpellID"];
+                int spellId = row.FieldAs<int>("SpellID");
                 SpellClassOptionsBySpellId.TryAdd(spellId, row);
             });
         }));
@@ -88,8 +89,8 @@ public static class DbcMgr
             SpellScalingStore = dbcd.Load("SpellScaling", ConfigurationMgr.SelectedBuild);
             Parallel.ForEach(SpellScalingStore.Values, row =>
             {
-                int spellId = (int)row["SpellID"];
-                SpellScalingSpellId.TryAdd(spellId, row);
+                int spellId = row.FieldAs<int>("SpellID");
+                SpellScalingBySpellId.TryAdd(spellId, row);
             });
         }));
         
@@ -103,7 +104,14 @@ public static class DbcMgr
         runningTasks.Add(Task.Run(() => SpellPowerStore = dbcd.Load("SpellPower", ConfigurationMgr.SelectedBuild)));
         runningTasks.Add(Task.Run(() => SpellCategoriesStore = dbcd.Load("SpellCategories", ConfigurationMgr.SelectedBuild)));
         runningTasks.Add(Task.Run(() => DifficultyStore = dbcd.Load("Difficulty", ConfigurationMgr.SelectedBuild)));
-        runningTasks.Add(Task.Run(() => ItemSparseStore = dbcd.Load("ItemSparse", ConfigurationMgr.SelectedBuild)));
+        runningTasks.Add(Task.Run(() =>
+        {
+            ItemSparseStore = dbcd.Load("ItemSparse", ConfigurationMgr.SelectedBuild);
+            Parallel.ForEach(ItemSparseStore.Values, row =>
+            {
+                ItemNamesByItemId.TryAdd(row.ID, row.FieldAs<string>("Display_lang"));
+            });
+        }));
         
         await Task.WhenAll(runningTasks);
     }
@@ -112,6 +120,7 @@ public static class DbcMgr
     {
         SpellStore = null;
         SpellMiscStore = null;
+        SpellCooldownsStore = null;
         SpellEffectStore = null;
         SpellNameStore = null;
         SpellCastTimesStore = null;
@@ -120,6 +129,7 @@ public static class DbcMgr
         SpellTargetRestrictionsStore = null;
         SpellRangeStore = null;
         SpellCategoriesStore = null;
+        SpellPowerStore = null;
         DifficultyStore = null;
         ItemSparseStore = null;
         

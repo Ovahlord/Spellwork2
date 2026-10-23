@@ -26,11 +26,11 @@
                     Grid.Row="1"
                     Margin="0,10,0,0"
                     Spacing="5">
-            <TextBlock FontWeight="Bold">
+            <SelectableTextBlock FontWeight="Bold">
                 <Run Text="ID: "/>
                 <Run Text="{Binding SpellId, StringFormat={}{0} - }"/>
                 <Run Text="{Binding FullName}"/>
-            </TextBlock>
+            </SelectableTextBlock>
         </StackPanel>
 
         <!-- Tooltips -->
@@ -49,16 +49,16 @@
 
             <StackPanel>
                 <TextBlock Text="Spell" FontWeight="Bold" />
-                <TextBlock Text="{Binding Description}"
-                           IsVisible="{Binding HasSpellDescription}"
-                           TextWrapping="Wrap" />
+                <SelectableTextBlock Text="{Binding Description}"
+                                     IsVisible="{Binding HasSpellDescription}"
+                                     TextWrapping="Wrap" />
 
                 <TextBlock Text="Aura" FontWeight="Bold"
                            IsVisible="{Binding HasAuraDescription}"
                            Margin="0,10,0,0" />
-                <TextBlock Text="{Binding AuraDescription}"
-                           IsVisible="{Binding HasAuraDescription}"
-                           TextWrapping="Wrap" />
+                <SelectableTextBlock Text="{Binding AuraDescription}"
+                                     IsVisible="{Binding HasAuraDescription}"
+                                     TextWrapping="Wrap" />
             </StackPanel>
         </Expander>
 
@@ -74,24 +74,24 @@
                       ShowGridLines="False" ColumnSpacing="10">
                     
                     <TextBlock Grid.Row="0" Grid.Column="0" Text="SpellFamily" FontWeight="DemiBold"/>
-                    <TextBlock Grid.Row="0" Grid.Column="1">
+                    <SelectableTextBlock Grid.Row="0" Grid.Column="1">
                         <Run Text="{Binding SpellFamily}"/>
                         <Run Text="{Binding SpellFamilyId, StringFormat={}({0})}"/>
-                    </TextBlock>
+                    </SelectableTextBlock>
                     
                     <TextBlock Grid.Row="1" Grid.Column="0" Text="SpellFamilyMask" FontWeight="DemiBold" IsVisible="{Binding HasSpellFamily}"/>
-                    <TextBlock Grid.Row="1" Grid.Column="1" IsVisible="{Binding HasSpellFamily}">
+                    <SelectableTextBlock Grid.Row="1" Grid.Column="1" IsVisible="{Binding HasSpellFamily}">
                         <Run Text="{Binding SpellClassMasks[0], StringFormat={}0x{0:X8} - }" />
                         <Run Text="{Binding SpellClassMasks[1], StringFormat={}0x{0:X8} - }" />
                         <Run Text="{Binding SpellClassMasks[2], StringFormat={}0x{0:X8} - }" />
                         <Run Text="{Binding SpellClassMasks[3], StringFormat={}0x{0:X8}}" />
-                    </TextBlock>
+                    </SelectableTextBlock>
                     
                     <TextBlock Grid.Row="2" Grid.Column="0" Text="SchoolMask" FontWeight="DemiBold"/>
-                    <TextBlock Grid.Row="2" Grid.Column="1">
+                    <SelectableTextBlock Grid.Row="2" Grid.Column="1">
                         <Run Text="{Binding SchoolMask}"/>
                         <Run Text="{Binding SchoolMaskInt, StringFormat={}(0x{0:X2})}"/>
-                    </TextBlock>
+                    </SelectableTextBlock>
                     
                     <TextBlock Grid.Row="3" Grid.Column="0" Text="Has SpellScaling" FontWeight="DemiBold"/>
                     <TextBlock Grid.Row="3" Grid.Column="1" Text="{Binding HasScaling}"/>

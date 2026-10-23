@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using DBCD;
 using Spellwork2.DBC;
 using Spellwork2.Enums;
@@ -8,39 +7,39 @@ namespace Spellwork2.ViewModels;
 
 public class SpellEffectViewModel : ViewModelBase
 {
-    public int EffectIndex { get; init; }
-    public int Effect { get; init; }
-    public int EffectAura { get; init; }
-    public float BasePoints { get; init; }
-    public float Variance { get; init; }
-    public int DieSides { get; init; }
-    public int Period { get; init; }
-    public int TriggerSpell { get; init; }
-
-    public int[] EffectMiscValues { get; set; } = [0, 0];
+    // Record accessors
+    public int EffectIndex =>_spellEffectEntry?.FieldAs<int>("EffectIndex") ?? 0;
+    public int Effect => _spellEffectEntry?.FieldAs<int>("Effect") ?? 0;
+    public int EffectAura => _spellEffectEntry?.FieldAs<int>("EffectAura") ?? 0;
+    public int Period => _spellEffectEntry?.FieldAs<int>("EffectAuraPeriod") ?? 0;
+    public int TriggerSpell => _spellEffectEntry?.FieldAs<int>("EffectTriggerSpell") ?? 0;
+    public float Variance => _spellEffectEntry?.FieldAs<float>("Variance") ?? 0f;
     
+    // Convenience properties
     public SpellEffects EffectName => (SpellEffects)Effect;
     public SpellAuras EffectAuraName => (SpellAuras)EffectAura;
-    public ImplicitTargets ImplicitTargetA { get; init; }
-    public ImplicitTargets ImplicitTargetB { get; init; }
+    public bool HasAura => EffectAuraName != SpellAuras.SPELL_AURA_NONE;
+    public bool HasTriggerSpell => TriggerSpell > 0;
+    
+    // Post-processing data
+    public float BasePoints { get; init; }
+    public int DieSides { get; init; }
+    public int[] EffectMiscValues { get; init; } = [0, 0];
     public string RadiusA { get; init; } = string.Empty;
     public string RadiusB { get; init; } = string.Empty;
     public string TriggerSpellName { get; init; } = string.Empty;
-
-    public bool HasAura => EffectAuraName != SpellAuras.SPELL_AURA_NONE;
-    public bool HasTriggerSpell => TriggerSpell > 0;
+    public ImplicitTargets ImplicitTargetA { get; init; }
+    public ImplicitTargets ImplicitTargetB { get; init; }
+    
+    private readonly DBCDRow? _spellEffectEntry;
     
     public SpellEffectViewModel()
     {
     }
     
-    public SpellEffectViewModel(DBCDRow dbcRow)
+    public SpellEffectViewModel(DBCDRow spellEffectEntry)
     {
-        EffectIndex = Convert.ToInt32(dbcRow["EffectIndex"]);
-        Effect = Convert.ToInt32(dbcRow["Effect"]);
-        EffectAura = Convert.ToInt32(dbcRow["EffectAura"]);
-        Period = Convert.ToInt32(dbcRow["EffectAuraPeriod"]);
-        TriggerSpell = Convert.ToInt32(dbcRow["EffectTriggerSpell"]);
+        _spellEffectEntry =  spellEffectEntry;
         if (TriggerSpell > 0 && DbcMgr.SpellNameStore != null)
         {
             if (DbcMgr.SpellNameStore.TryGetValue(TriggerSpell, out DBCDRow? spellNameEntry))
@@ -50,11 +49,11 @@ public class SpellEffectViewModel : ViewModelBase
         }
 
         // Initialize misc values
-        if (dbcRow["EffectMiscValue"] is int[] miscValues)
+        if (_spellEffectEntry["EffectMiscValue"] is int[] miscValues)
             EffectMiscValues = miscValues;
 
         // Initialize effect targets
-        if (dbcRow["ImplicitTarget"] is short[] targets)
+        if (_spellEffectEntry["ImplicitTarget"] is short[] targets)
         {
             ImplicitTargetA = (ImplicitTargets)targets[0];
             ImplicitTargetB = (ImplicitTargets)targets[1];
@@ -63,7 +62,7 @@ public class SpellEffectViewModel : ViewModelBase
         // Initialize effect radius
         if (DbcMgr.SpellRadiusStore != null)
         {
-            if (dbcRow["EffectRadiusIndex"] is uint[] radiusIndexes)
+            if (_spellEffectEntry["EffectRadiusIndex"] is uint[] radiusIndexes)
             {
                 if (radiusIndexes[0] > 0 && ImplicitTargetA != ImplicitTargets.NONE)
                     if (DbcMgr.SpellRadiusStore.TryGetValue((int)radiusIndexes[0], out DBCDRow? radius))
@@ -77,19 +76,17 @@ public class SpellEffectViewModel : ViewModelBase
 
         try
         {
-            BasePoints = Convert.ToSingle(dbcRow["EffectBasePoints"]);
+            BasePoints = Convert.ToSingle(_spellEffectEntry["EffectBasePoints"]);
         }
         catch (Exception) // Newer client versions store BasePoints as float instead of int
         {
-            BasePoints = Convert.ToSingle(dbcRow["EffectBasePointsF"]);
+            BasePoints = Convert.ToSingle(_spellEffectEntry["EffectBasePointsF"]);
         }
         
-        Variance = Convert.ToSingle(dbcRow["Variance"]);
-
         try
         {
             // DieSides exist only in classic varians
-            DieSides = Convert.ToInt32(dbcRow["EffectDieSides"]);
+            DieSides = Convert.ToInt32(_spellEffectEntry["EffectDieSides"]);
         }
         catch (Exception)
         {
