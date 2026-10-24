@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using CommunityToolkit.Mvvm.ComponentModel;
 using DBCD;
 using Spellwork2.DBC;
 using Spellwork2.Enums;
@@ -15,12 +16,13 @@ public struct AttributeInfo
     public string AttributeNames { get; set; }
 }
 
-public class SpellInfoViewModel : ViewModelBase
+public partial class SpellInfoViewModel : ViewModelBase
 {
     // Record accessors
     public int SpellId => _spellMiscEntry?.FieldAs<int>("SpellID") ?? 0;
     public int DifficultyId => _spellMiscEntry?.FieldAs<int>("DifficultyID") ?? 0;
     public int SpellRangeId => _spellMiscEntry?.FieldAs<int>("RangeIndex") ?? 0;
+    public int SpellDurationId => _spellMiscEntry?.FieldAs<int>("DurationIndex") ?? 0;
     public string DifficultyName => _difficultyEntry?.FieldAs<string>("Name_lang") ?? "None";
     public string Name => _spellNameEntry?.FieldAs<string>("Name_lang") ?? string.Empty;
     public string NameSubtext => _spellEntry?.FieldAs<string>("NameSubtext_lang") ?? string.Empty;
@@ -29,6 +31,9 @@ public class SpellInfoViewModel : ViewModelBase
     public string SpellRangeName => _spellRangeEntry?.FieldAs<string>("DisplayName_lang") ?? string.Empty;
     public int SpellFamilyId => _spellClassOptionsEntry?.FieldAs<int>("SpellClassSet") ?? 0;
     public int SchoolMaskInt => _spellMiscEntry?.FieldAs<int>("SchoolMask") ?? 0;
+    public int Duration => _spellDurationEntry?.FieldAs<int>("Duration") ?? 0;
+    public int MaxDuration => _spellDurationEntry?.FieldAs<int>("MaxDuration") ?? 0;
+    public int DurationPerLevel => _spellDurationEntry?.FieldAs<int>("DurationPerLevel") ?? 0;
     
     // Convenience properties
     public SpellSchoolMasks SchoolMask => (SpellSchoolMasks)SchoolMaskInt;
@@ -39,6 +44,7 @@ public class SpellInfoViewModel : ViewModelBase
     public bool HasAttributes => Attributes.Count > 0;
     public bool HasSpellFamily => SpellFamily != SpellFamilies.SPELLFAMILY_GENERIC;
     public bool HasScaling => _spellScalingEntry != null;
+    public bool HasSpellDuration => _spellDurationEntry != null;
     
     // Post-processing data
     public ObservableCollection<AttributeInfo> Attributes { get; init; } = [];
@@ -55,8 +61,9 @@ public class SpellInfoViewModel : ViewModelBase
     private readonly DBCDRow? _spellClassOptionsEntry;
     private readonly DBCDRow? _difficultyEntry;
     private readonly DBCDRow? _spellRangeEntry;
+    private readonly DBCDRow? _spellDurationEntry;
     private readonly DBCDRow? _spellScalingEntry;
-
+    
     public SpellInfoViewModel()
     {
     }
@@ -68,6 +75,7 @@ public class SpellInfoViewModel : ViewModelBase
         DbcMgr.SpellStore?.TryGetValue(SpellId, out _spellEntry);
         DbcMgr.SpellNameStore?.TryGetValue(SpellId, out _spellNameEntry);
         DbcMgr.SpellRangeStore?.TryGetValue(SpellRangeId, out _spellRangeEntry);
+        DbcMgr.SpellDurationStore?.TryGetValue(SpellDurationId, out _spellDurationEntry);
         DbcMgr.SpellClassOptionsBySpellId.TryGetValue(SpellId, out _spellClassOptionsEntry);
         DbcMgr.SpellScalingBySpellId.TryGetValue(SpellId, out _spellScalingEntry);
 

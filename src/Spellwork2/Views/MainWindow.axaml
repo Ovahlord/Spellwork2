@@ -78,7 +78,7 @@
                        Height="NaN" Width="1"/>
             
             <!-- SpellInfo Display -->
-            <ScrollViewer  DockPanel.Dock="Left">
+            <ScrollViewer DockPanel.Dock="Left" AllowAutoHide="False">
                 <ContentControl Content="{Binding SelectedSpellInfo}"/>
             </ScrollViewer>
         </DockPanel>

@@ -73,13 +73,20 @@
                 <Grid ColumnDefinitions="Auto,*" RowDefinitions="*,*,*,*,*,*,*,*,*,*,*"
                       ShowGridLines="False" ColumnSpacing="10">
                     
-                    <TextBlock Grid.Row="0" Grid.Column="0" Text="SpellFamily" FontWeight="DemiBold"/>
+                    <!-- SpellFamily -->
+                    <TextBlock Grid.Row="0" Grid.Column="0" 
+                               Text="SpellFamily" 
+                               FontWeight="DemiBold"/>
                     <SelectableTextBlock Grid.Row="0" Grid.Column="1">
                         <Run Text="{Binding SpellFamily}"/>
                         <Run Text="{Binding SpellFamilyId, StringFormat={}({0})}"/>
                     </SelectableTextBlock>
                     
-                    <TextBlock Grid.Row="1" Grid.Column="0" Text="SpellFamilyMask" FontWeight="DemiBold" IsVisible="{Binding HasSpellFamily}"/>
+                    <!-- SpellFamilyMask -->
+                    <TextBlock Grid.Row="1" Grid.Column="0" 
+                               Text="SpellFamilyMask" 
+                               FontWeight="DemiBold" 
+                               IsVisible="{Binding HasSpellFamily}"/>
                     <SelectableTextBlock Grid.Row="1" Grid.Column="1" IsVisible="{Binding HasSpellFamily}">
                         <Run Text="{Binding SpellClassMasks[0], StringFormat={}0x{0:X8} - }" />
                         <Run Text="{Binding SpellClassMasks[1], StringFormat={}0x{0:X8} - }" />
@@ -87,12 +94,16 @@
                         <Run Text="{Binding SpellClassMasks[3], StringFormat={}0x{0:X8}}" />
                     </SelectableTextBlock>
                     
-                    <TextBlock Grid.Row="2" Grid.Column="0" Text="SchoolMask" FontWeight="DemiBold"/>
+                    <!-- SchoolMask -->
+                    <TextBlock Grid.Row="2" Grid.Column="0" 
+                               Text="SchoolMask" 
+                               FontWeight="DemiBold"/>
                     <SelectableTextBlock Grid.Row="2" Grid.Column="1">
                         <Run Text="{Binding SchoolMask}"/>
                         <Run Text="{Binding SchoolMaskInt, StringFormat={}(0x{0:X2})}"/>
                     </SelectableTextBlock>
                     
+                    <!-- Spell Scaling -->
                     <TextBlock Grid.Row="3" Grid.Column="0" Text="Has SpellScaling" FontWeight="DemiBold"/>
                     <TextBlock Grid.Row="3" Grid.Column="1" Text="{Binding HasScaling}"/>
                          
@@ -118,6 +129,18 @@
                                 <Binding Path="MaxRange[1]"/>
                             </MultiBinding>
                         </TextBox.Text>
+                    </TextBlock>
+                    
+                    <!-- Duration -->
+                    <TextBlock Grid.Row="7" Grid.Column="0" Text="Duration" FontWeight="DemiBold" IsVisible="{Binding HasSpellDuration}"/>
+                    <TextBlock Grid.Row="7" Grid.Column="1" IsVisible="{Binding HasSpellDuration}">
+                        <TextBlock.Text>
+                            <MultiBinding StringFormat="{}{0}ms (Max: {1}ms) (+{2}ms per level)">
+                                <Binding Path="Duration"/>
+                                <Binding Path="MaxDuration"/>
+                                <Binding Path="DurationPerLevel"/>
+                            </MultiBinding>
+                        </TextBlock.Text>
                     </TextBlock>
                     
                 </Grid>
