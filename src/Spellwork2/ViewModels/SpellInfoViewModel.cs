@@ -16,7 +16,7 @@ public struct AttributeInfo
     public string AttributeNames { get; set; }
 }
 
-public partial class SpellInfoViewModel : ViewModelBase
+public class SpellInfoViewModel : ViewModelBase
 {
     // Record accessors
     public int SpellId => _spellMiscEntry?.FieldAs<int>("SpellID") ?? 0;
@@ -34,6 +34,10 @@ public partial class SpellInfoViewModel : ViewModelBase
     public int Duration => _spellDurationEntry?.FieldAs<int>("Duration") ?? 0;
     public int MaxDuration => _spellDurationEntry?.FieldAs<int>("MaxDuration") ?? 0;
     public int DurationPerLevel => _spellDurationEntry?.FieldAs<int>("DurationPerLevel") ?? 0;
+    public int ConeDegrees => _spellTargetRestrictionsEntry?.FieldAs<int>("ConeDegrees") ?? 0;
+    public int ConeWidth => _spellTargetRestrictionsEntry?.FieldAs<int>("Width") ?? 0;
+    public int MaxTargets => _spellTargetRestrictionsEntry?.FieldAs<int>("MaxTargets") ?? 0;
+    public int MaxTargetLevel => _spellTargetRestrictionsEntry?.FieldAs<int>("MaxTargetLevel") ?? 0;
     
     // Convenience properties
     public SpellSchoolMasks SchoolMask => (SpellSchoolMasks)SchoolMaskInt;
@@ -45,6 +49,10 @@ public partial class SpellInfoViewModel : ViewModelBase
     public bool HasSpellFamily => SpellFamily != SpellFamilies.SPELLFAMILY_GENERIC;
     public bool HasScaling => _spellScalingEntry != null;
     public bool HasSpellDuration => _spellDurationEntry != null;
+    public bool HasConeDegrees => ConeDegrees > 0;
+    public bool HasConeWidth => ConeWidth > 0;
+    public bool HasMaxTargets => MaxTargets > 0;
+    public bool HasMaxTargetLevel => MaxTargetLevel > 0;
     
     // Post-processing data
     public ObservableCollection<AttributeInfo> Attributes { get; init; } = [];
@@ -63,6 +71,7 @@ public partial class SpellInfoViewModel : ViewModelBase
     private readonly DBCDRow? _spellRangeEntry;
     private readonly DBCDRow? _spellDurationEntry;
     private readonly DBCDRow? _spellScalingEntry;
+    private readonly DBCDRow? _spellTargetRestrictionsEntry;
     
     public SpellInfoViewModel()
     {
@@ -98,10 +107,13 @@ public partial class SpellInfoViewModel : ViewModelBase
         if (DbcMgr.SpellEffectsBySpellId.TryGetValue(SpellId, out List<DBCDRow>? spellEffectEntries))
         {
             SpellEffects = spellEffectEntries
-                .Where(r => Convert.ToInt32(r["DifficultyID"]) == DifficultyId)
+                .Where(r => r.FieldAs<int>("DifficultyID") == DifficultyId)
                 .Select(r => new SpellEffectViewModel(r))
                 .ToList();
         }
+        
+        if (DbcMgr.SpellTargetRestrictionsBySpellId.TryGetValue(SpellId, out List<DBCDRow>? spellTargetRestrictionsEntries))
+            _spellTargetRestrictionsEntry = spellTargetRestrictionsEntries.FirstOrDefault(r => r.FieldAs<int>("DifficultyID") == DifficultyId);
         
         if (_spellClassOptionsEntry != null)
         {

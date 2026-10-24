@@ -32,6 +32,7 @@ public static class DbcMgr
     public static ConcurrentDictionary<int, List<DBCDRow>> SpellMiscBySpellId { get; } = [];
     public static ConcurrentDictionary<int, DBCDRow> SpellClassOptionsBySpellId { get; } = [];
     public static ConcurrentDictionary<int, DBCDRow> SpellScalingBySpellId { get; } = [];
+    public static ConcurrentDictionary<int, List<DBCDRow>> SpellTargetRestrictionsBySpellId { get; } = [];
     public static ConcurrentDictionary<int, string> ItemNamesByItemId { get; } = [];
     
     
@@ -94,12 +95,23 @@ public static class DbcMgr
             });
         }));
         
+        runningTasks.Add(Task.Run(() =>
+        {
+            SpellTargetRestrictionsStore = dbcd.Load("SpellTargetRestrictions", ConfigurationMgr.SelectedBuild);
+            Parallel.ForEach(SpellTargetRestrictionsStore.Values, row =>
+            {
+                int spellId = row.FieldAs<int>("SpellID");
+                if (SpellTargetRestrictionsBySpellId.TryGetValue(spellId, out List<DBCDRow>? rows))
+                    rows.Add(row);
+                else
+                    SpellTargetRestrictionsBySpellId.TryAdd(spellId, [row]);
+            });
+        }));
         
         runningTasks.Add(Task.Run(() => SpellCastTimesStore = dbcd.Load("SpellCastTimes", ConfigurationMgr.SelectedBuild)));
         runningTasks.Add(Task.Run(() => SpellCooldownsStore = dbcd.Load("SpellCooldowns", ConfigurationMgr.SelectedBuild)));
         runningTasks.Add(Task.Run(() => SpellDurationStore = dbcd.Load("SpellDuration", ConfigurationMgr.SelectedBuild)));
         runningTasks.Add(Task.Run(() => SpellRadiusStore = dbcd.Load("SpellRadius", ConfigurationMgr.SelectedBuild)));
-        runningTasks.Add(Task.Run(() => SpellTargetRestrictionsStore = dbcd.Load("SpellTargetRestrictions", ConfigurationMgr.SelectedBuild)));
         runningTasks.Add(Task.Run(() => SpellRangeStore = dbcd.Load("SpellRange", ConfigurationMgr.SelectedBuild)));
         runningTasks.Add(Task.Run(() => SpellPowerStore = dbcd.Load("SpellPower", ConfigurationMgr.SelectedBuild)));
         runningTasks.Add(Task.Run(() => SpellCategoriesStore = dbcd.Load("SpellCategories", ConfigurationMgr.SelectedBuild)));

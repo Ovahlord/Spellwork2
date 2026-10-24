@@ -70,7 +70,7 @@
                   IsExpanded="True">
 
             <StackPanel Spacing="5">
-                <Grid ColumnDefinitions="Auto,*" RowDefinitions="*,*,*,*,*,*,*,*,*,*,*"
+                <Grid ColumnDefinitions="Auto,*" RowDefinitions="*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*"
                       ShowGridLines="False" ColumnSpacing="10">
                     
                     <!-- SpellFamily -->
@@ -142,6 +142,22 @@
                             </MultiBinding>
                         </TextBlock.Text>
                     </TextBlock>
+                    
+                    <!-- Cone Degrees-->
+                    <TextBlock Grid.Row="8" Grid.Column="0" Text="Cone Degrees" FontWeight="DemiBold" IsVisible="{Binding HasConeDegrees}"/>
+                    <TextBlock Grid.Row="8" Grid.Column="1" Text="{Binding ConeDegrees}" IsVisible="{Binding HasConeDegrees}"/>
+                    
+                    <!-- Cone Width-->
+                    <TextBlock Grid.Row="9" Grid.Column="0" Text="Cone Width" FontWeight="DemiBold" IsVisible="{Binding HasConeWidth}"/>
+                    <TextBlock Grid.Row="9" Grid.Column="1" Text="{Binding ConeWidth}" IsVisible="{Binding HasConeWidth}"/>
+                    
+                    <!-- Max Targets-->
+                    <TextBlock Grid.Row="10" Grid.Column="0" Text="Max. Targets" FontWeight="DemiBold" IsVisible="{Binding HasMaxTargets}"/>
+                    <TextBlock Grid.Row="10" Grid.Column="1" Text="{Binding MaxTargets}" IsVisible="{Binding HasMaxTargets}"/>
+                    
+                    <!-- Max Target Level-->
+                    <TextBlock Grid.Row="11" Grid.Column="0" Text="Max. Target Level" FontWeight="DemiBold" IsVisible="{Binding HasMaxTargetLevel}"/>
+                    <TextBlock Grid.Row="11" Grid.Column="1" Text="{Binding MaxTargetLevel}" IsVisible="{Binding HasMaxTargetLevel}"/>
                     
                 </Grid>
                 
