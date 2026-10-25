@@ -38,6 +38,7 @@ public class SpellInfoViewModel : ViewModelBase
     public int ConeWidth => _spellTargetRestrictionsEntry?.FieldAs<int>("Width") ?? 0;
     public int MaxTargets => _spellTargetRestrictionsEntry?.FieldAs<int>("MaxTargets") ?? 0;
     public int MaxTargetLevel => _spellTargetRestrictionsEntry?.FieldAs<int>("MaxTargetLevel") ?? 0;
+    public string DescriptionVariables => DbcMgr.SpellDescriptionVariablesBySpellId.TryGetValue(SpellId, out string? variables) ? variables : string.Empty;
     
     // Convenience properties
     public SpellSchoolMasks SchoolMask => (SpellSchoolMasks)SchoolMaskInt;
@@ -53,6 +54,7 @@ public class SpellInfoViewModel : ViewModelBase
     public bool HasConeWidth => ConeWidth > 0;
     public bool HasMaxTargets => MaxTargets > 0;
     public bool HasMaxTargetLevel => MaxTargetLevel > 0;
+    public bool HasDescriptionVariables => !string.IsNullOrWhiteSpace(DescriptionVariables);
     
     // Post-processing data
     public ObservableCollection<AttributeInfo> Attributes { get; init; } = [];

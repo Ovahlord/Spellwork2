@@ -28,6 +28,8 @@ public static class DbcMgr
     public static IDBCDStorage? DifficultyStore { get; private set; }
     public static IDBCDStorage? ItemSparseStore { get; private set; }
     public static IDBCDStorage? SummonPropertiesStore { get; private set; }
+    public static IDBCDStorage? SpellDescriptionVariablesStore { get; private set; }
+    public static IDBCDStorage? SpellXDescriptionVariablesStore { get; private set; }
     
     public static ConcurrentDictionary<int, List<DBCDRow>> SpellEffectsBySpellId { get; } = [];
     public static ConcurrentDictionary<int, List<DBCDRow>> SpellMiscBySpellId { get; } = [];
@@ -35,6 +37,7 @@ public static class DbcMgr
     public static ConcurrentDictionary<int, DBCDRow> SpellScalingBySpellId { get; } = [];
     public static ConcurrentDictionary<int, List<DBCDRow>> SpellTargetRestrictionsBySpellId { get; } = [];
     public static ConcurrentDictionary<int, string> ItemNamesByItemId { get; } = [];
+    public static ConcurrentDictionary<int, string> SpellDescriptionVariablesBySpellId { get; } = [];
     
     
     public static async Task LoadStoragesAsync()
@@ -118,6 +121,19 @@ public static class DbcMgr
         runningTasks.Add(Task.Run(() => SpellCategoriesStore = dbcd.Load("SpellCategories", ConfigurationMgr.SelectedBuild)));
         runningTasks.Add(Task.Run(() => DifficultyStore = dbcd.Load("Difficulty", ConfigurationMgr.SelectedBuild)));
         runningTasks.Add(Task.Run(() => SummonPropertiesStore = dbcd.Load("SummonProperties", ConfigurationMgr.SelectedBuild)));
+        runningTasks.Add(Task.Run(() => SpellDescriptionVariablesStore = dbcd.Load("SpellDescriptionVariables", ConfigurationMgr.SelectedBuild)).ContinueWith((_) =>
+        {
+            SpellXDescriptionVariablesStore = dbcd.Load("SpellXDescriptionVariables", ConfigurationMgr.SelectedBuild);
+            Parallel.ForEach(SpellXDescriptionVariablesStore.Values, row =>
+            {
+                int spellId = row.FieldAs<int>("SpellID");
+                int recordId = row.FieldAs<int>("SpellDescriptionVariablesID");
+                if (SpellDescriptionVariablesStore != null && SpellDescriptionVariablesStore.TryGetValue(recordId, out DBCDRow? variableEntry))
+                    SpellDescriptionVariablesBySpellId.TryAdd(spellId, variableEntry.FieldAs<string>("Variables"));
+            });
+            
+        }));
+        
         runningTasks.Add(Task.Run(() =>
         {
             ItemSparseStore = dbcd.Load("ItemSparse", ConfigurationMgr.SelectedBuild);
