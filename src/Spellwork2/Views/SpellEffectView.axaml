@@ -66,26 +66,26 @@
                 
                 <!-- Effect -->
                 <StackPanel>
-                    <TextBlock>
+                    <SelectableTextBlock>
                         <Run Text="BasePoints: " FontWeight="DemiBold"/>
                         <Run Text="{Binding BasePoints}"/>
                         <Run Text=" Variance: " FontWeight="DemiBold"/>
                         <Run Text="{Binding Variance}"/>
                         <Run Text=" DieSides: " FontWeight="DemiBold"/>
                         <Run Text="{Binding DieSides}"/>
-                    </TextBlock>
+                    </SelectableTextBlock>
         
-                    <TextBlock>
+                    <SelectableTextBlock TextWrapping="Wrap">
                         <Run Text="MiscValueA: " FontWeight="DemiBold"/>
                         <Run Text="{Binding EffectMiscValues[0]}"/>
                         <Run Text="{Binding MiscValueAInfo}"/>
-                    </TextBlock>
+                    </SelectableTextBlock>
                     
-                    <TextBlock>
+                    <SelectableTextBlock TextWrapping="Wrap">
                         <Run Text="MiscValueB: " FontWeight="DemiBold"/>
                         <Run Text="{Binding EffectMiscValues[1]}"/>
                         <Run Text="{Binding MiscValueBInfo}"/>
-                    </TextBlock>
+                    </SelectableTextBlock>
                     
                     <StackPanel Orientation="Horizontal" IsVisible="{Binding HasTriggerSpell}">
                         <TextBlock Text="TriggerSpell:" FontWeight="DemiBold" VerticalAlignment="Center"/>
@@ -103,6 +103,12 @@
                             </TextBlock>
                         </HyperlinkButton>
                     </StackPanel>
+                    
+                    <SelectableTextBlock IsVisible="{Binding CreatesItem}">
+                        <Run Text="Created Item: " FontWeight="DemiBold"/>
+                        <Run Text="{Binding EffectItemType}"/>
+                        <Run Text="{Binding ItemTypeName, StringFormat=({0})}"/>
+                    </SelectableTextBlock>
 
                 </StackPanel>
                 

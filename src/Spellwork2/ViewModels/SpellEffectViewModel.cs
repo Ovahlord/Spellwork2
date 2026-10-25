@@ -1,7 +1,6 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
-using Avalonia.Controls;
-using Avalonia.Controls.Notifications;
 using CommunityToolkit.Mvvm.Input;
 using DBCD;
 using Spellwork2.DBC;
@@ -18,12 +17,15 @@ public partial class SpellEffectViewModel : ViewModelBase
     public int Period => _spellEffectEntry?.FieldAs<int>("EffectAuraPeriod") ?? 0;
     public int TriggerSpell => _spellEffectEntry?.FieldAs<int>("EffectTriggerSpell") ?? 0;
     public float Variance => _spellEffectEntry?.FieldAs<float>("Variance") ?? 0f;
+    public int EffectItemType => _spellEffectEntry?.FieldAs<int>("EffectItemType") ?? 0;
     
     // Convenience properties
     public SpellEffects EffectName => (SpellEffects)Effect;
     public SpellAuras EffectAuraName => (SpellAuras)EffectAura;
     public bool HasAura => EffectAuraName != SpellAuras.SPELL_AURA_NONE;
     public bool HasTriggerSpell => TriggerSpell > 0;
+    public bool CreatesItem => EffectItemType > 0 && EffectName == SpellEffects.SPELL_EFFECT_CREATE_ITEM;
+    public string ItemTypeName => DbcMgr.ItemNamesByItemId.GetValueOrDefault(EffectItemType, string.Empty);
     
     // Post-processing data
     public float BasePoints { get; init; }
@@ -108,43 +110,44 @@ public partial class SpellEffectViewModel : ViewModelBase
     // Provides additional information for the misc values provided by the spell effect based on what effect is used
     private void GenerateMiscValueDescriptions()
     {
+        if (HasAura)
+        {
+            switch (EffectAuraName)
+            {
+                case SpellAuras.SPELL_AURA_MOD_RESISTANCE:
+                case SpellAuras.SPELL_AURA_MOD_RESISTANCE_EXCLUSIVE:
+                case SpellAuras.SPELL_AURA_MOD_TARGET_RESISTANCE:
+                case SpellAuras.SPELL_AURA_MOD_BASE_RESISTANCE:
+                case SpellAuras.SPELL_AURA_MOD_BASE_RESISTANCE_PCT:
+                case SpellAuras.SPELL_AURA_MOD_RESISTANCE_PCT:
+                    MiscValueAInfo = $"(Target resistance(s): {(SpellSchoolMasks)EffectMiscValues[0]})";
+                    break;
+                case SpellAuras.SPELL_AURA_MOD_RESISTANCE_OF_STAT_PERCENT:
+                    MiscValueAInfo = $"(Target resistance(s): {(SpellSchoolMasks)EffectMiscValues[0]})";
+                    MiscValueBInfo = $"(Source stat: {(Stats)EffectMiscValues[1]})";
+                    break;
+                case SpellAuras.SPELL_AURA_SCHOOL_ABSORB:
+                    MiscValueAInfo = $"(Absorb SpellSchool(s): {(SpellSchoolMasks)EffectMiscValues[0]})";
+                    break;
+                default:
+                    break;
+            }
+
+            return;
+        }
         
         switch (EffectName)
         {
-            case SpellEffects.SPELL_EFFECT_APPLY_AURA:
-            case SpellEffects.SPELL_EFFECT_APPLY_AREA_AURA_PARTY:
-            case SpellEffects.SPELL_EFFECT_APPLY_AREA_AURA_RAID:
-            case SpellEffects.SPELL_EFFECT_APPLY_AREA_AURA_SUMMONS:
-            case SpellEffects.SPELL_EFFECT_APPLY_AREA_AURA_FRIEND:
-            case SpellEffects.SPELL_EFFECT_APPLY_AREA_AURA_ENEMY:
-            case SpellEffects.SPELL_EFFECT_APPLY_AREA_AURA_PET:
-            case SpellEffects.SPELL_EFFECT_APPLY_AURA_ON_PET:
-            case SpellEffects.SPELL_EFFECT_APPLY_AREA_AURA_OWNER:
-            case SpellEffects.SPELL_EFFECT_APPLY_AREA_AURA_PARTY_NONRANDOM:
-            {
-                switch (EffectAuraName)
-                {
-                    case SpellAuras.SPELL_AURA_SCHOOL_ABSORB:
-                    case SpellAuras.SPELL_AURA_MOD_RESISTANCE:
-                    case SpellAuras.SPELL_AURA_MOD_RESISTANCE_EXCLUSIVE:
-                    case SpellAuras.SPELL_AURA_MOD_TARGET_RESISTANCE:
-                    case SpellAuras.SPELL_AURA_MOD_BASE_RESISTANCE:
-                    case SpellAuras.SPELL_AURA_MOD_BASE_RESISTANCE_PCT:
-                    case SpellAuras.SPELL_AURA_MOD_RESISTANCE_PCT:
-                        MiscValueAInfo = $"(Target resistance(s): {(SpellSchoolMasks)EffectMiscValues[0]})";
-                        break;
-                    case SpellAuras.SPELL_AURA_MOD_RESISTANCE_OF_STAT_PERCENT:
-                        MiscValueAInfo = $"(Target resistance(s): {(SpellSchoolMasks)EffectMiscValues[0]})";
-                        MiscValueBInfo = $"(Source stat: {(Stats)EffectMiscValues[1]})";
-                        break;
-                    default:
-                        break;
-                }
-                break;
-            }
             case SpellEffects.SPELL_EFFECT_SUMMON:
                 MiscValueAInfo = "(Creature Id)";
                 MiscValueBInfo = "(SummonProperties Id)";
+                break;
+            case SpellEffects.SPELL_EFFECT_TRIGGER_SPELL:
+                MiscValueAInfo = "(Delay in ms)";
+                break;
+            case SpellEffects.SPELL_EFFECT_ENERGIZE:
+            case SpellEffects.SPELL_EFFECT_ENERGIZE_PCT:
+                MiscValueAInfo = $"(PowerType: {(Powers)EffectMiscValues[0]})";
                 break;
             default:
                 break;

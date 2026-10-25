@@ -39,7 +39,6 @@ public static class DbcMgr
     public static ConcurrentDictionary<int, string> ItemNamesByItemId { get; } = [];
     public static ConcurrentDictionary<int, string> SpellDescriptionVariablesBySpellId { get; } = [];
     
-    
     public static async Task LoadStoragesAsync()
     {
         FilesystemDBCProvider db2Provider = new(ConfigurationMgr.Db2FolderPath);
@@ -112,15 +111,6 @@ public static class DbcMgr
             });
         }));
         
-        runningTasks.Add(Task.Run(() => SpellCastTimesStore = dbcd.Load("SpellCastTimes", ConfigurationMgr.SelectedBuild)));
-        runningTasks.Add(Task.Run(() => SpellCooldownsStore = dbcd.Load("SpellCooldowns", ConfigurationMgr.SelectedBuild)));
-        runningTasks.Add(Task.Run(() => SpellDurationStore = dbcd.Load("SpellDuration", ConfigurationMgr.SelectedBuild)));
-        runningTasks.Add(Task.Run(() => SpellRadiusStore = dbcd.Load("SpellRadius", ConfigurationMgr.SelectedBuild)));
-        runningTasks.Add(Task.Run(() => SpellRangeStore = dbcd.Load("SpellRange", ConfigurationMgr.SelectedBuild)));
-        runningTasks.Add(Task.Run(() => SpellPowerStore = dbcd.Load("SpellPower", ConfigurationMgr.SelectedBuild)));
-        runningTasks.Add(Task.Run(() => SpellCategoriesStore = dbcd.Load("SpellCategories", ConfigurationMgr.SelectedBuild)));
-        runningTasks.Add(Task.Run(() => DifficultyStore = dbcd.Load("Difficulty", ConfigurationMgr.SelectedBuild)));
-        runningTasks.Add(Task.Run(() => SummonPropertiesStore = dbcd.Load("SummonProperties", ConfigurationMgr.SelectedBuild)));
         runningTasks.Add(Task.Run(() => SpellDescriptionVariablesStore = dbcd.Load("SpellDescriptionVariables", ConfigurationMgr.SelectedBuild)).ContinueWith((_) =>
         {
             SpellXDescriptionVariablesStore = dbcd.Load("SpellXDescriptionVariables", ConfigurationMgr.SelectedBuild);
@@ -142,6 +132,16 @@ public static class DbcMgr
                 ItemNamesByItemId.TryAdd(row.ID, row.FieldAs<string>("Display_lang"));
             });
         }));
+        
+        runningTasks.Add(Task.Run(() => SpellCastTimesStore = dbcd.Load("SpellCastTimes", ConfigurationMgr.SelectedBuild)));
+        runningTasks.Add(Task.Run(() => SpellCooldownsStore = dbcd.Load("SpellCooldowns", ConfigurationMgr.SelectedBuild)));
+        runningTasks.Add(Task.Run(() => SpellDurationStore = dbcd.Load("SpellDuration", ConfigurationMgr.SelectedBuild)));
+        runningTasks.Add(Task.Run(() => SpellRadiusStore = dbcd.Load("SpellRadius", ConfigurationMgr.SelectedBuild)));
+        runningTasks.Add(Task.Run(() => SpellRangeStore = dbcd.Load("SpellRange", ConfigurationMgr.SelectedBuild)));
+        runningTasks.Add(Task.Run(() => SpellPowerStore = dbcd.Load("SpellPower", ConfigurationMgr.SelectedBuild)));
+        runningTasks.Add(Task.Run(() => SpellCategoriesStore = dbcd.Load("SpellCategories", ConfigurationMgr.SelectedBuild)));
+        runningTasks.Add(Task.Run(() => DifficultyStore = dbcd.Load("Difficulty", ConfigurationMgr.SelectedBuild)));
+        runningTasks.Add(Task.Run(() => SummonPropertiesStore = dbcd.Load("SummonProperties", ConfigurationMgr.SelectedBuild)));
         
         await Task.WhenAll(runningTasks);
     }
