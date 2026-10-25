@@ -33,6 +33,12 @@ public static class ConfigurationMgr
         set => _settings.SelectedBuild = value;
     }
 
+    public static bool DarkModeEnabled
+    {
+        get => _settings.DarkModeEnabled;
+        set => _settings.DarkModeEnabled = value;
+    }
+
     static ConfigurationMgr()
     {
         _settings = new ConfigSettings();
@@ -66,5 +72,14 @@ public static class ConfigurationMgr
         
         await using FileStream fs = File.OpenWrite("config.json");
         await JsonSerializer.SerializeAsync(fs, _settings, SerializerOptions);
+    }
+
+    public static void SaveConfig()
+    {
+        if (File.Exists("config.json"))
+            File.Delete("config.json");
+        
+        using FileStream fs = File.OpenWrite("config.json");
+        JsonSerializer.Serialize(fs, _settings, SerializerOptions);
     }
 }

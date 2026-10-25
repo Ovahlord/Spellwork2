@@ -25,5 +25,21 @@
         <Style Selector="TreeDataGrid /template/ ScrollViewer">
             <Setter Property="AllowAutoHide" Value="False" />
         </Style>
+        
+        <Style Selector="Expander">
+            <Style.Resources>
+                <SolidColorBrush x:Key="ExpanderHeaderBackground">#CCCCCC</SolidColorBrush>
+                <SolidColorBrush x:Key="ExpanderHeaderBackgroundPointerOver">#CCCCCC</SolidColorBrush>
+                <SolidColorBrush x:Key="ExpanderHeaderBackgroundPressed">#CCCCCC</SolidColorBrush>
+                
+                <!-- <SolidColorBrush x:Key="ExpanderHeaderForeground">#FFFFFF</SolidColorBrush> -->
+                <!-- <SolidColorBrush x:Key="ExpanderHeaderForegroundPointerOver">#FFFFFF</SolidColorBrush> -->
+                <!-- <SolidColorBrush x:Key="ExpanderHeaderForegroundPressed">#FFFFFF</SolidColorBrush> -->
+                
+                <SolidColorBrush x:Key="ExpanderContentBackground">#FFFFFF</SolidColorBrush>
+                <SolidColorBrush x:Key="ExpanderContentBorderBrush">#E0E0E0</SolidColorBrush>
+            </Style.Resources>
+        </Style>
+        
     </Application.Styles>
 </Application>

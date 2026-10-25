@@ -47,6 +47,8 @@ public class App : Application
                 desktop.MainWindow = mainWindow;
             }
 
+            mainWindowViewModel.DarkModeEnabled = ConfigurationMgr.DarkModeEnabled;
+
         }
 
         base.OnFrameworkInitializationCompleted();

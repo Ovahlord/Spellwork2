@@ -11,7 +11,7 @@
         <vm:SpellInfoViewModel />
     </Design.DataContext>
 
-    <Grid  ShowGridLines="False"
+    <Grid ShowGridLines="False"
           RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto"
           ColumnDefinitions="*"
           IsVisible="True">
@@ -35,10 +35,13 @@
 
         <!-- Tooltips -->
         <Expander Grid.Row="2"
-                  Header="Tooltips"
                   HorizontalAlignment="Stretch"
                   Margin="0,5"
                   IsExpanded="True">
+            
+            <Expander.Header>
+                <TextBlock Text="Tooltips" FontWeight="Bold" />
+            </Expander.Header>
 
             <Expander.IsVisible>
                 <MultiBinding Converter="{x:Static BoolConverters.Or}">
@@ -48,7 +51,7 @@
             </Expander.IsVisible>
 
             <StackPanel>
-                <TextBlock Text="Spell" FontWeight="Bold" />
+                <TextBlock Text="Spell" FontWeight="Bold" IsVisible="{Binding HasSpellDescription}"/>
                 <SelectableTextBlock Text="{Binding Description}"
                                      IsVisible="{Binding HasSpellDescription}"
                                      TextWrapping="Wrap" />
@@ -71,13 +74,16 @@
 
         <!-- SpellMisc-->
         <Expander Grid.Row="3"
-                  Header="Misc"
                   HorizontalAlignment="Stretch"
                   Margin="0,5"
                   IsExpanded="True">
+            
+            <Expander.Header>
+                <TextBlock Text="Misc" FontWeight="Bold" />
+            </Expander.Header>
 
-            <StackPanel Spacing="5">
-                <Grid ColumnDefinitions="Auto,*" RowDefinitions="*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*"
+            <WrapPanel Orientation="Horizontal" ItemSpacing="15" LineSpacing="15" ItemWidth="600">
+                <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto"
                       ShowGridLines="False" ColumnSpacing="10">
                     
                     <!-- SpellFamily -->
@@ -165,12 +171,12 @@
                     <!-- Max Target Level-->
                     <TextBlock Grid.Row="11" Grid.Column="0" Text="Max. Target Level" FontWeight="DemiBold" IsVisible="{Binding HasMaxTargetLevel}"/>
                     <TextBlock Grid.Row="11" Grid.Column="1" Text="{Binding MaxTargetLevel}" IsVisible="{Binding HasMaxTargetLevel}"/>
-                    
                 </Grid>
                 
                 <!-- Attributes -->
-                <StackPanel IsVisible="{Binding HasAttributes}">
-                    <TableView ItemsSource="{Binding Attributes}" Margin="0,20,0,0">
+                <StackPanel IsVisible="{Binding HasAttributes}" Orientation="Horizontal">
+
+                    <TableView ItemsSource="{Binding Attributes}">
                         <TableView.Columns>
                             <TableViewColumn Header="Attribute" 
                                              Binding="{Binding AttributeTitle}" 
@@ -190,18 +196,28 @@
                         </TableView.Columns>
                     </TableView>
                 </StackPanel>
-            </StackPanel>
+                
+            </WrapPanel>
 
         </Expander>
 
         <!-- Effects -->
         <Expander Grid.Row="4"
-                  Header="Effects"
                   HorizontalAlignment="Stretch"
                   Margin="0,5"
                   IsExpanded="True">
-
-            <ItemsControl ItemsSource="{Binding SpellEffects}" />
+            
+            <Expander.Header>
+                <TextBlock Text="Effects" FontWeight="Bold" />
+            </Expander.Header>
+            
+            <ItemsControl ItemsSource="{Binding SpellEffects}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel Orientation="Horizontal"/>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+            </ItemsControl>
         </Expander>
     </Grid>
 

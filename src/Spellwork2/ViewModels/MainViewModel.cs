@@ -5,10 +5,12 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Models.TreeDataGrid;
 using Avalonia.Controls.Notifications;
 using Avalonia.Controls.Selection;
+using Avalonia.Styling;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Spellwork2.Configuration;
@@ -34,6 +36,9 @@ public partial class MainViewModel : ViewModelBase
 
     [ObservableProperty] 
     public partial string SpellIdOrNameFilter { get; set; } = string.Empty;
+    
+    [ObservableProperty]
+    public partial bool DarkModeEnabled { get; set; }
     
     public MainViewModel()
     {
@@ -84,6 +89,17 @@ public partial class MainViewModel : ViewModelBase
     partial void OnSpellIdOrNameFilterChanged(string value)
     {
         SpellInfoSource.RefreshFilter();
+    }
+
+    partial void OnDarkModeEnabledChanged(bool value)
+    {
+        if (Application.Current is { } app)
+        {
+            app.RequestedThemeVariant = value ? ThemeVariant.Dark : ThemeVariant.Light;
+        }
+
+        ConfigurationMgr.DarkModeEnabled = value;
+        ConfigurationMgr.SaveConfig();
     }
 
     private void BuildDataGridFilter()

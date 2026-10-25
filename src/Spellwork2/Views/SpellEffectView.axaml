@@ -14,22 +14,20 @@
     <GroupBox Header="{Binding}" Margin="5">
         <GroupBox.HeaderTemplate>
             <DataTemplate DataType="vm:SpellEffectViewModel">
-                <SelectableTextBlock Text="{Binding EffectIndex, StringFormat=EFFECT_{0}}" FontWeight="Bold"/>
+                <SelectableTextBlock FontWeight="Bold">
+                    <SelectableTextBlock.Text>
+                        <MultiBinding StringFormat="EFFECT_{0} - {1} ({2})">
+                            <Binding Path="EffectIndex"/>
+                            <Binding Path="EffectName"/>
+                            <Binding Path="Effect"/>
+                        </MultiBinding>
+                    </SelectableTextBlock.Text>
+                </SelectableTextBlock>
             </DataTemplate>
         </GroupBox.HeaderTemplate>
         
         <StackPanel>
-            <!-- Spell Effect-->
-            <SelectableTextBlock FontWeight="SemiBold">
-                <SelectableTextBlock.Text>
-                    <MultiBinding StringFormat="{}{0} ({1})">
-                        <Binding Path="EffectName"/>
-                        <Binding Path="Effect"/>
-                    </MultiBinding>
-                </SelectableTextBlock.Text>
-            </SelectableTextBlock>
-        
-        <StackPanel Spacing="2" Margin="15,0,0,0">
+            <StackPanel Spacing="2" Margin="15,0,0,0">
             <StackPanel>
                 <!-- Aura -->
                 <StackPanel IsVisible="{Binding HasAura}">
@@ -115,8 +113,8 @@
             </StackPanel>
         </StackPanel>
         
-        <TextBlock/>
+            <TextBlock/>
             
-    </StackPanel>
+        </StackPanel>
     </GroupBox>
 </UserControl>
