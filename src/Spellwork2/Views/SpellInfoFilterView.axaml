@@ -24,17 +24,21 @@
             <ComboBox Name="PropertyComboBox"
                       PlaceholderText="Property"
                       ItemsSource="{Binding SpellInfoAttributes}"
+                      SelectedIndex="{Binding SelectedSpellInfoAttribute}"
                       Width="220"
                       MaxWidth="220"/>
         
             <ComboBox Name="OperatorComboBox"
                       PlaceholderText="Operator"
                       ItemsSource="{Binding FilterOperators}"
+                      SelectedIndex="{Binding SelectedFilterOperator}"
                       Width="220"
                       MaxWidth="220"/>
         
             <ComboBox Name="ValueComboBox" 
                       PlaceholderText="Value"
+                      ItemsSource="{Binding FilterValues}"
+                      SelectedItem="{Binding SelectedFilterValue}"
                       Width="220"
                       MaxWidth="220"/>
         </StackPanel>

@@ -20,7 +20,7 @@ namespace Spellwork2.ViewModels;
 public partial class MainViewModel : ViewModelBase
 {
     public FlatTreeDataGridSource<SpellInfoViewModel> SpellInfoSource { get; set;  }
-    public ObservableCollection<ViewModelBase> SpellInfoFilters { get; set; } = [];
+    public ObservableCollection<SpellInfoFilterViewModel> SpellInfoFilters { get; set; } = [];
     public WindowNotificationManager? NotificationManager { get; set; }
     
     [ObservableProperty]
@@ -46,8 +46,9 @@ public partial class MainViewModel : ViewModelBase
                 new TextColumn<SpellInfoViewModel, string>("Name", x => x.FullName, new GridLength(200)),
             },
         };
-
+        
         BuildDataGridFilter();
+        SpellInfoFilters.CollectionChanged += (_, _) => BuildDataGridFilter();
         
         SpellInfoSource.RowSelection?.SelectionChanged += RowSelectionOnSelectionChanged;
     }
@@ -63,11 +64,11 @@ public partial class MainViewModel : ViewModelBase
     [RelayCommand]
     public void AddSpellInfoFilter()
     {
-        SpellInfoFilters.Add(new SpellInfoFilterViewModel());
+        SpellInfoFilters.Add(new SpellInfoFilterViewModel(this));
     }
 
     [RelayCommand]
-    public void RemoveSpellInfoFilter(SpellInfoFilterViewModel  spellInfoFilter)
+    public void RemoveSpellInfoFilter(SpellInfoFilterViewModel spellInfoFilter)
     {
         SpellInfoFilters.Remove(spellInfoFilter);
     }
@@ -89,19 +90,24 @@ public partial class MainViewModel : ViewModelBase
     {
         SpellInfoSource.Filter(spellInfo =>
         {
+            if (SpellInfoFilters.Any(f => !f.MatchesCriteria(spellInfo)))
+                return false;
+            
             if (string.IsNullOrWhiteSpace(SpellIdOrNameFilter))
                 return true;
             
             if (int.TryParse(SpellIdOrNameFilter, out int spellId))
-                if (spellInfo.SpellId == spellId)
-                    return true;
+                if (spellInfo.SpellId != spellId)
+                    return false;
             
             if (!string.IsNullOrWhiteSpace(spellInfo.Name))
-                if (spellInfo.Name.Contains(SpellIdOrNameFilter, StringComparison.OrdinalIgnoreCase))
-                    return true;
+                if (!spellInfo.Name.Contains(SpellIdOrNameFilter, StringComparison.OrdinalIgnoreCase))
+                    return false;
             
-            return false;
+            return true;
         });
+        
+        SpellInfoSource.RefreshFilter();
     }
     
     public async Task LoadStoragesAsync()
