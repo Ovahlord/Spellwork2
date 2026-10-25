@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using CommunityToolkit.Mvvm.ComponentModel;
 using DBCD;
 using Spellwork2.DBC;
 using Spellwork2.Enums;
@@ -75,13 +74,18 @@ public class SpellInfoViewModel : ViewModelBase
     private readonly DBCDRow? _spellScalingEntry;
     private readonly DBCDRow? _spellTargetRestrictionsEntry;
     
+    public MainViewModel MainViewModel { get; init; }
+    
     public SpellInfoViewModel()
     {
+        MainViewModel = new MainViewModel();
     }
     
-    public SpellInfoViewModel(DBCDRow spellMiscEntry)
+    public SpellInfoViewModel(DBCDRow spellMiscEntry, MainViewModel parent)
     {
         _spellMiscEntry = spellMiscEntry;
+        MainViewModel = parent;
+        
         DbcMgr.DifficultyStore?.TryGetValue(DifficultyId, out _difficultyEntry);
         DbcMgr.SpellStore?.TryGetValue(SpellId, out _spellEntry);
         DbcMgr.SpellNameStore?.TryGetValue(SpellId, out _spellNameEntry);
@@ -110,7 +114,7 @@ public class SpellInfoViewModel : ViewModelBase
         {
             SpellEffects = spellEffectEntries
                 .Where(r => r.FieldAs<int>("DifficultyID") == DifficultyId)
-                .Select(r => new SpellEffectViewModel(r))
+                .Select(r => new SpellEffectViewModel(r, this))
                 .ToList();
         }
         

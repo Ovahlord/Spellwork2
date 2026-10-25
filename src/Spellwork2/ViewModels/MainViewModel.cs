@@ -139,7 +139,7 @@ public partial class MainViewModel : ViewModelBase
             {
                 Parallel.ForEach(DbcMgr.SpellMiscStore.Values, spellMiscRow =>
                 {
-                    spellInfos.Add(new SpellInfoViewModel(spellMiscRow));
+                    spellInfos.Add(new SpellInfoViewModel(spellMiscRow, this));
                 });
             });
             

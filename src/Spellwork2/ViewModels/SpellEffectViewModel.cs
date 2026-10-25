@@ -1,11 +1,15 @@
 using System;
+using System.Linq;
+using Avalonia.Controls;
+using Avalonia.Controls.Notifications;
+using CommunityToolkit.Mvvm.Input;
 using DBCD;
 using Spellwork2.DBC;
 using Spellwork2.Enums;
 
 namespace Spellwork2.ViewModels;
 
-public class SpellEffectViewModel : ViewModelBase
+public partial class SpellEffectViewModel : ViewModelBase
 {
     // Record accessors
     public int EffectIndex =>_spellEffectEntry?.FieldAs<int>("EffectIndex") ?? 0;
@@ -34,14 +38,18 @@ public class SpellEffectViewModel : ViewModelBase
     public string MiscValueBInfo { get; private set; } = string.Empty;
     
     private readonly DBCDRow? _spellEffectEntry;
+    public SpellInfoViewModel SpellInfoViewModel { get; init; }
     
     public SpellEffectViewModel()
     {
+        SpellInfoViewModel = new SpellInfoViewModel();
     }
     
-    public SpellEffectViewModel(DBCDRow spellEffectEntry)
+    public SpellEffectViewModel(DBCDRow spellEffectEntry, SpellInfoViewModel parent)
     {
         _spellEffectEntry = spellEffectEntry;
+        SpellInfoViewModel = parent;
+        
         if (TriggerSpell > 0 && DbcMgr.SpellNameStore != null)
         {
             if (DbcMgr.SpellNameStore.TryGetValue(TriggerSpell, out DBCDRow? spellNameEntry))
@@ -141,5 +149,15 @@ public class SpellEffectViewModel : ViewModelBase
             default:
                 break;
         }
+    }
+
+    [RelayCommand]
+    public void SelectSpellFromList(int spellId)
+    {
+        SpellInfoViewModel? selectedSpellInfoViewModel = SpellInfoViewModel.MainViewModel.SpellInfoSource.Items
+            .FirstOrDefault(s => s.SpellId == spellId);
+
+        if (selectedSpellInfoViewModel != null)
+            SpellInfoViewModel.MainViewModel.SelectedSpellInfo = selectedSpellInfoViewModel;
     }
 }

@@ -87,17 +87,23 @@
                         <Run Text="{Binding MiscValueBInfo}"/>
                     </TextBlock>
                     
-                    <TextBlock IsVisible="{Binding HasTriggerSpell}">
-                        <Run Text="TriggerSpell: " FontWeight="DemiBold"/>
-                        <Run>
-                            <Run.Text>
-                                <MultiBinding StringFormat="{}{0} ({1})">
-                                   <Binding Path="TriggerSpell"/> 
-                                   <Binding Path="TriggerSpellName"/> 
-                                </MultiBinding>
-                            </Run.Text>
-                        </Run>
-                    </TextBlock>
+                    <StackPanel Orientation="Horizontal" IsVisible="{Binding HasTriggerSpell}">
+                        <TextBlock Text="TriggerSpell:" FontWeight="DemiBold" VerticalAlignment="Center"/>
+                        <HyperlinkButton Name="TriggerSpellHyperlink"
+                                         Command="{Binding SelectSpellFromList}"
+                                         CommandParameter="{Binding TriggerSpell}"
+                                         ToolTip.Tip="Opens the spell info for this spell if exists">
+                            <TextBlock>
+                                <TextBlock.Text>
+                                    <MultiBinding StringFormat="{}{0} ({1})">
+                                        <Binding Path="TriggerSpell"/> 
+                                        <Binding Path="TriggerSpellName"/> 
+                                    </MultiBinding>
+                                </TextBlock.Text>
+                            </TextBlock>
+                        </HyperlinkButton>
+                    </StackPanel>
+
                 </StackPanel>
                 
             </StackPanel>
