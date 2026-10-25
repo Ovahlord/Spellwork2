@@ -27,6 +27,7 @@ public static class DbcMgr
     public static IDBCDStorage? SpellScalingStore { get; private set; }
     public static IDBCDStorage? DifficultyStore { get; private set; }
     public static IDBCDStorage? ItemSparseStore { get; private set; }
+    public static IDBCDStorage? SummonPropertiesStore { get; private set; }
     
     public static ConcurrentDictionary<int, List<DBCDRow>> SpellEffectsBySpellId { get; } = [];
     public static ConcurrentDictionary<int, List<DBCDRow>> SpellMiscBySpellId { get; } = [];
@@ -116,6 +117,7 @@ public static class DbcMgr
         runningTasks.Add(Task.Run(() => SpellPowerStore = dbcd.Load("SpellPower", ConfigurationMgr.SelectedBuild)));
         runningTasks.Add(Task.Run(() => SpellCategoriesStore = dbcd.Load("SpellCategories", ConfigurationMgr.SelectedBuild)));
         runningTasks.Add(Task.Run(() => DifficultyStore = dbcd.Load("Difficulty", ConfigurationMgr.SelectedBuild)));
+        runningTasks.Add(Task.Run(() => SummonPropertiesStore = dbcd.Load("SummonProperties", ConfigurationMgr.SelectedBuild)));
         runningTasks.Add(Task.Run(() =>
         {
             ItemSparseStore = dbcd.Load("ItemSparse", ConfigurationMgr.SelectedBuild);

@@ -14,5 +14,13 @@ public enum SpellSchoolMasks
     SPELL_SCHOOL_MASK_SHADOW  = (1 << SpellSchools.SPELL_SCHOOL_SHADOW),
     SPELL_SCHOOL_MASK_ARCANE  = (1 << SpellSchools.SPELL_SCHOOL_ARCANE),
     
-    
+    // 124, not include normal and holy damage
+    SPELL_SCHOOL_MASK_SPELL   = (SPELL_SCHOOL_MASK_FIRE   |
+                                 SPELL_SCHOOL_MASK_NATURE | SPELL_SCHOOL_MASK_FROST  |
+                                 SPELL_SCHOOL_MASK_SHADOW | SPELL_SCHOOL_MASK_ARCANE),
+    // 126
+    SPELL_SCHOOL_MASK_MAGIC   = (SPELL_SCHOOL_MASK_HOLY | SPELL_SCHOOL_MASK_SPELL),
+
+    // 127
+    SPELL_SCHOOL_MASK_ALL     = (SPELL_SCHOOL_MASK_NORMAL | SPELL_SCHOOL_MASK_MAGIC)
 }

@@ -30,6 +30,8 @@ public class SpellEffectViewModel : ViewModelBase
     public string TriggerSpellName { get; init; } = string.Empty;
     public ImplicitTargets ImplicitTargetA { get; init; }
     public ImplicitTargets ImplicitTargetB { get; init; }
+    public string MiscValueAInfo { get; private set; } = string.Empty;
+    public string MiscValueBInfo { get; private set; } = string.Empty;
     
     private readonly DBCDRow? _spellEffectEntry;
     
@@ -39,7 +41,7 @@ public class SpellEffectViewModel : ViewModelBase
     
     public SpellEffectViewModel(DBCDRow spellEffectEntry)
     {
-        _spellEffectEntry =  spellEffectEntry;
+        _spellEffectEntry = spellEffectEntry;
         if (TriggerSpell > 0 && DbcMgr.SpellNameStore != null)
         {
             if (DbcMgr.SpellNameStore.TryGetValue(TriggerSpell, out DBCDRow? spellNameEntry))
@@ -90,6 +92,54 @@ public class SpellEffectViewModel : ViewModelBase
         }
         catch (Exception)
         {
+        }
+
+        GenerateMiscValueDescriptions();
+    }
+
+    // Provides additional information for the misc values provided by the spell effect based on what effect is used
+    private void GenerateMiscValueDescriptions()
+    {
+        
+        switch (EffectName)
+        {
+            case SpellEffects.SPELL_EFFECT_APPLY_AURA:
+            case SpellEffects.SPELL_EFFECT_APPLY_AREA_AURA_PARTY:
+            case SpellEffects.SPELL_EFFECT_APPLY_AREA_AURA_RAID:
+            case SpellEffects.SPELL_EFFECT_APPLY_AREA_AURA_SUMMONS:
+            case SpellEffects.SPELL_EFFECT_APPLY_AREA_AURA_FRIEND:
+            case SpellEffects.SPELL_EFFECT_APPLY_AREA_AURA_ENEMY:
+            case SpellEffects.SPELL_EFFECT_APPLY_AREA_AURA_PET:
+            case SpellEffects.SPELL_EFFECT_APPLY_AURA_ON_PET:
+            case SpellEffects.SPELL_EFFECT_APPLY_AREA_AURA_OWNER:
+            case SpellEffects.SPELL_EFFECT_APPLY_AREA_AURA_PARTY_NONRANDOM:
+            {
+                switch (EffectAuraName)
+                {
+                    case SpellAuras.SPELL_AURA_SCHOOL_ABSORB:
+                    case SpellAuras.SPELL_AURA_MOD_RESISTANCE:
+                    case SpellAuras.SPELL_AURA_MOD_RESISTANCE_EXCLUSIVE:
+                    case SpellAuras.SPELL_AURA_MOD_TARGET_RESISTANCE:
+                    case SpellAuras.SPELL_AURA_MOD_BASE_RESISTANCE:
+                    case SpellAuras.SPELL_AURA_MOD_BASE_RESISTANCE_PCT:
+                    case SpellAuras.SPELL_AURA_MOD_RESISTANCE_PCT:
+                        MiscValueAInfo = $"(Target resistance(s): {(SpellSchoolMasks)EffectMiscValues[0]})";
+                        break;
+                    case SpellAuras.SPELL_AURA_MOD_RESISTANCE_OF_STAT_PERCENT:
+                        MiscValueAInfo = $"(Target resistance(s): {(SpellSchoolMasks)EffectMiscValues[0]})";
+                        MiscValueBInfo = $"(Source stat: {(Stats)EffectMiscValues[1]})";
+                        break;
+                    default:
+                        break;
+                }
+                break;
+            }
+            case SpellEffects.SPELL_EFFECT_SUMMON:
+                MiscValueAInfo = "(Creature Id)";
+                MiscValueBInfo = "(SummonProperties Id)";
+                break;
+            default:
+                break;
         }
     }
 }
