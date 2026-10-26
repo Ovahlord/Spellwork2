@@ -26,7 +26,7 @@
                      <SolidColorBrush x:Key="ExpanderHeaderBackgroundPointerOver">#333333</SolidColorBrush>
                      <SolidColorBrush x:Key="ExpanderHeaderBackgroundPressed">#333333</SolidColorBrush>
                      <SolidColorBrush x:Key="ExpanderContentBackground">#1E1E1E</SolidColorBrush>
-                     <SolidColorBrush x:Key="ExpanderContentBorderBrush">Black</SolidColorBrush>
+                     <SolidColorBrush x:Key="ExpanderContentBorderBrush">#808080</SolidColorBrush>
                  </ResourceDictionary>        
                  
              </ResourceDictionary.ThemeDictionaries>
@@ -36,7 +36,7 @@
     <Application.Styles>
         <FluentTheme>
             <FluentTheme.Palettes>
-                <ColorPaletteResources x:Key="Dark" RegionColor="#1E1E1E" />
+                <ColorPaletteResources x:Key="Dark" RegionColor="#1E1E1E"/>
             </FluentTheme.Palettes>
         </FluentTheme>
         
