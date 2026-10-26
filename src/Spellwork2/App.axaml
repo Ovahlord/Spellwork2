@@ -4,17 +4,42 @@
              xmlns:local="using:Spellwork2"
              RequestedThemeVariant="Default">
              <!-- "Default" ThemeVariant follows system theme variant. "Dark" or "Light" are other available options. -->
-
+             
     <Application.DataTemplates>
         <local:ViewLocator />
     </Application.DataTemplates>
 
+     <Application.Resources>
+         <ResourceDictionary>
+             <ResourceDictionary.ThemeDictionaries>
+                 
+                 <ResourceDictionary x:Key="Default">
+                     <SolidColorBrush x:Key="ExpanderHeaderBackground">#CCCCCC</SolidColorBrush>
+                     <SolidColorBrush x:Key="ExpanderHeaderBackgroundPointerOver">#CCCCCC</SolidColorBrush>
+                     <SolidColorBrush x:Key="ExpanderHeaderBackgroundPressed">#CCCCCC</SolidColorBrush>
+                     <SolidColorBrush x:Key="ExpanderContentBackground">#FFFFFF</SolidColorBrush>
+                     <SolidColorBrush x:Key="ExpanderContentBorderBrush">#E0E0E0</SolidColorBrush>
+                 </ResourceDictionary>
+                 
+                 <ResourceDictionary x:Key="Dark">
+                     <SolidColorBrush x:Key="ExpanderHeaderBackground">#333333</SolidColorBrush>
+                     <SolidColorBrush x:Key="ExpanderHeaderBackgroundPointerOver">#333333</SolidColorBrush>
+                     <SolidColorBrush x:Key="ExpanderHeaderBackgroundPressed">#333333</SolidColorBrush>
+                     <SolidColorBrush x:Key="ExpanderContentBackground">#1E1E1E</SolidColorBrush>
+                     <SolidColorBrush x:Key="ExpanderContentBorderBrush">Black</SolidColorBrush>
+                 </ResourceDictionary>        
+                 
+             </ResourceDictionary.ThemeDictionaries>
+         </ResourceDictionary>
+     </Application.Resources>
+             
     <Application.Styles>
         <FluentTheme>
             <FluentTheme.Palettes>
                 <ColorPaletteResources x:Key="Dark" RegionColor="#1E1E1E" />
             </FluentTheme.Palettes>
         </FluentTheme>
+        
         <StyleInclude Source="avares://Avalonia.Controls.TreeDataGrid/Themes/Generic.axaml"/>
         
         <Style Selector="NotificationCard">
@@ -26,20 +51,6 @@
             <Setter Property="AllowAutoHide" Value="False" />
         </Style>
         
-        <Style Selector="Expander">
-            <Style.Resources>
-                <SolidColorBrush x:Key="ExpanderHeaderBackground">#CCCCCC</SolidColorBrush>
-                <SolidColorBrush x:Key="ExpanderHeaderBackgroundPointerOver">#CCCCCC</SolidColorBrush>
-                <SolidColorBrush x:Key="ExpanderHeaderBackgroundPressed">#CCCCCC</SolidColorBrush>
-                
-                <!-- <SolidColorBrush x:Key="ExpanderHeaderForeground">#FFFFFF</SolidColorBrush> -->
-                <!-- <SolidColorBrush x:Key="ExpanderHeaderForegroundPointerOver">#FFFFFF</SolidColorBrush> -->
-                <!-- <SolidColorBrush x:Key="ExpanderHeaderForegroundPressed">#FFFFFF</SolidColorBrush> -->
-                
-                <SolidColorBrush x:Key="ExpanderContentBackground">#FFFFFF</SolidColorBrush>
-                <SolidColorBrush x:Key="ExpanderContentBorderBrush">#E0E0E0</SolidColorBrush>
-            </Style.Resources>
-        </Style>
-        
     </Application.Styles>
+             
 </Application>
